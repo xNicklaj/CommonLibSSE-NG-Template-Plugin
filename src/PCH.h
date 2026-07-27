@@ -130,6 +130,14 @@
 #define NODEFERWINDOWPOS  // DeferWindowPos routines
 #define NOMCX             // Modem Configuration Extensions
 
+//commonlibsse-ng and skse
+#ifdef _WINDOWS_
+#error "WINDOWS INCLUDED BEFORE SKYRIM.H"
+#endif
+#include <RE/Skyrim.h>
+#include <SKSE/SKSE.h>
+#include <REL/Relocation.h>
+
 //spdlog
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/basic_file_sink.h>
@@ -137,11 +145,6 @@
 
 #define PLUGIN_LOGPATTERN_DEFAULT "[%b %d %H:%M:%S.%e] [%l] [%t] %v"
 #define PLUGIN_LOGPATTERN_DEBUG "[%b %d %H:%M:%S.%e] [%l] [%t] [%s:%#] %v"
-
-//commonlibsse-ng and skse
-#include <RE/Skyrim.h>
-#include <SKSE/SKSE.h>
-#include <REL/Relocation.h>
 
 //winapi
 #include <ShlObj_core.h>

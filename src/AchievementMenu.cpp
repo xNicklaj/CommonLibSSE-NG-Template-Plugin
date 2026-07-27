@@ -113,7 +113,7 @@ namespace Scaleform {
 
     RE::BSEventNotifyControl AchievementMenu::ProcessEvent(RE::InputEvent* const* a_event, RE::BSTEventSource<RE::InputEvent*>*) {
         auto* ui = RE::UI::GetSingleton();
-        if (!a_event || !(*a_event) || !RE::Main::GetSingleton()->gameActive) {
+        if (!a_event || !(*a_event) || !RE::Main::GetSingleton()->GetRuntimeData().gameActive) {
             return RE::BSEventNotifyControl::kContinue;
         }
 

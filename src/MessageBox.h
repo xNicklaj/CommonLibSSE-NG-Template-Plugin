@@ -14,8 +14,8 @@ namespace SkyrimScripting {
         public:
             ~MessageBoxResultCallback() override {}
             MessageBoxResultCallback(std::function<void(unsigned int)> callback) : _callback(callback) {}
-            void Run(RE::IMessageBoxCallback::Message message) override {
-                _callback(static_cast<unsigned int>(message));
+            void Run(std::uint8_t a_button) override {
+                _callback(static_cast<unsigned int>(a_button));
             }
         };
 
@@ -25,14 +25,17 @@ namespace SkyrimScripting {
             auto* factoryManager = RE::MessageDataFactoryManager::GetSingleton();
             auto* uiStringHolder = RE::InterfaceStrings::GetSingleton();
             auto* factory = factoryManager->GetCreator<RE::MessageBoxData>(
-                uiStringHolder->messageBoxData);  // "MessageBoxData" <--- can we just use this string?
+                uiStringHolder->messageBoxData);
             auto* messagebox = factory->Create();
             RE::BSTSmartPointer<RE::IMessageBoxCallback> messageCallback =
                 RE::make_smart<MessageBoxResultCallback>(callback);
             messagebox->callback = messageCallback;
             messagebox->bodyText = bodyText;
             for (auto text : buttonTextValues) messagebox->buttonText.push_back(text.c_str());
-            messagebox->QueueMessage();
+            auto* msgQueue = RE::UIMessageQueue::GetSingleton();
+            if (msgQueue) {
+                msgQueue->AddMessage(uiStringHolder->messageBoxMenu, RE::UI_MESSAGE_TYPE::kShow, messagebox);
+            }
         }
     };
 

@@ -56,7 +56,7 @@ RE::BSEventNotifyControl EventProcessor::ProcessEvent(const RE::MenuOpenCloseEve
 }
 
 RE::BSEventNotifyControl EventProcessor::ProcessEvent(RE::InputEvent* const* a_event, RE::BSTEventSource<RE::InputEvent*>*) {
-    if (!a_event || !*a_event || !RE::Main::GetSingleton()->gameActive) {
+    if (!a_event || !*a_event || !RE::Main::GetSingleton()->GetRuntimeData().gameActive) {
         return RE::BSEventNotifyControl::kContinue;
     }
     

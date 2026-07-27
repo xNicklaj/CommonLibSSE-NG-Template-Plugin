@@ -3,6 +3,7 @@
 .vscode/settings.json
 .vscode
 build
+.xmake
 cmake-build*
 vcpkg_installed
 Skyrim/Data/AchievementsData/Localizations/Test_*.txt
