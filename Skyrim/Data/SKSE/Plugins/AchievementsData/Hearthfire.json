@@ -42,7 +42,13 @@
             "achievementName": "$NAME_Architect",
             "icon": "ACH_Architect.dds",
             "description": "$DESC_Architect",
-            "conditions": []
+            "conditions": [
+                {
+                    "type": "QueryStatValue",
+                    "stat": "Wings Built",
+                    "value": 3
+                }
+            ]
         },
         {
             "achievementName": "$NAME_Land Baron",

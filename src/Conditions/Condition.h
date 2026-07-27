@@ -55,8 +55,10 @@ public:
 	virtual void SetConditionParameters(std::string, std::string, int);
 	virtual void SetConditionParameters(std::string);
 	virtual void SetConditionParameters(std::string, std::string);
+	virtual void SetConditionParameters(std::string, std::string, std::string);
 	virtual void SetConditionParameters(std::string, float);
     virtual void SetConditionParameters(std::string, bool);
+    virtual void SetConditionParameters(std::vector<std::string>, int);
 	virtual bool CheckCondition();
 	virtual void Localize(std::string);
 	virtual int Serialize(void);

@@ -33,6 +33,8 @@
 #include "Conditions/QuestObjectiveDone/QuestObjectiveDoneCondition.h"
 #include "Conditions/AchievementUnlocked/AchievementUnlockedCondition.h"
 #include "Conditions/ObjectState/ObjectStateCondition.h"
+#include "Conditions/PlayerCrime/PlayerCrimeCondition.h"
+#include "Conditions/WorldspaceDiscovery/WorldspaceDiscoveryCondition.h"
 #include "AchievementManager.h"
 
 Achievement::Achievement(json& jsonData, std::string plugin, std::string groupName)
@@ -88,7 +90,10 @@ Achievement::Achievement(json& jsonData, std::string plugin, std::string groupNa
             else if (type == "LocationDiscovery") {
                 LocationDiscoveryConditionFactory* locationDiscoveryConditionFactory = new LocationDiscoveryConditionFactory();
                 a_condition = locationDiscoveryConditionFactory->createCondition();
-                a_condition->SetConditionParameters(condition["locationID"].get<std::string>(), condition["worldspaceID"].get<std::string>());
+                std::string locID = condition.value("locationID", "");
+                std::string formID = condition.value("formID", "");
+                std::string worldspaceID = condition.value("worldspaceID", "");
+                a_condition->SetConditionParameters(locID, worldspaceID, formID);
             }
             else if (type == "DragonSoulAbsorbed") {
                 DragonSoulAbsorbedConditionFactory* dragonSoulAbsorbedConditionFactory = new DragonSoulAbsorbedConditionFactory();
@@ -187,6 +192,18 @@ Achievement::Achievement(json& jsonData, std::string plugin, std::string groupNa
             } else if (type == "PapyrusBinding") {
                 PapyrusBindingConditionFactory* papyrusBindingConditionFactory = new PapyrusBindingConditionFactory();
                 a_condition = papyrusBindingConditionFactory->createCondition();
+            } else if (type == "PlayerCrime") {
+                PlayerCrimeConditionFactory* playerCrimeConditionFactory = new PlayerCrimeConditionFactory();
+                a_condition = playerCrimeConditionFactory->createCondition();
+                std::vector<std::string> factions;
+                for (auto& factionID : condition["factions"]) {
+                    factions.push_back(factionID.get<std::string>());
+                }
+                a_condition->SetConditionParameters(factions, condition["threshold"].get<int>());
+            } else if (type == "WorldspaceDiscovery") {
+                WorldspaceDiscoveryConditionFactory* worldspaceDiscoveryConditionFactory = new WorldspaceDiscoveryConditionFactory();
+                a_condition = worldspaceDiscoveryConditionFactory->createCondition();
+                a_condition->SetConditionParameters(condition["worldspaceID"].get<std::string>(), condition["requiredCount"].get<int>());
             }
             else {
                 logger::warn("Unknown condition type {} in {}.", type, this->achievementName);

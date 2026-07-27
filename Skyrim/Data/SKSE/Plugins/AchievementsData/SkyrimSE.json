@@ -573,6 +573,16 @@
                     "type": "QueryStatValue",
                     "stat": "Potions Mixed",
                     "value": 1
+                },
+                {
+                    "type": "QueryStatValue",
+                    "stat": "Magic Items Made",
+                    "value": 1
+                },
+                {
+                    "type": "QueryStatValue",
+                    "stat": "Armor Improved",
+                    "value": 1
                 }
             ]
         },
@@ -580,52 +590,11 @@
             "achievementName": "$NAME_Master Criminal",
             "description": "$DESC_Master Criminal",
             "icon": "ACH_MasterCriminal.dds",
-            "joinType": "AND",
             "conditions": [
                 {
                     "type": "PlayerCrime",
-                    "amount": 1000,
-                    "hold": "WhiterunHold"
-                },
-                {
-                    "type": "PlayerCrime",
-                    "amount": 1000,
-                    "hold": "HaafingarHold"
-                },
-                {
-                    "type": "PlayerCrime",
-                    "amount": 1000,
-                    "hold": "HjaalmarchHold"
-                },
-                {
-                    "type": "PlayerCrime",
-                    "amount": 1000,
-                    "hold": "ThePale"
-                },
-                {
-                    "type": "PlayerCrime",
-                    "amount": 1000,
-                    "hold": "Winterhold"
-                },
-                {
-                    "type": "PlayerCrime",
-                    "amount": 1000,
-                    "hold": "Eastmarch"
-                },
-                {
-                    "type": "PlayerCrime",
-                    "amount": 1000,
-                    "hold": "TheRift"
-                },
-                {
-                    "type": "PlayerCrime",
-                    "amount": 1000,
-                    "hold": "FalkreathHold"
-                },
-                {
-                    "type": "PlayerCrime",
-                    "amount": 1000,
-                    "hold": "TheReach"
+                    "factions": ["0x02816D", "0x02816C", "0x02816B", "0x0267EA", "0x028170", "0x02816E", "0x0267E3", "0x02816F", "0x028171"],
+                    "threshold": 1000
                 }
             ]
         },

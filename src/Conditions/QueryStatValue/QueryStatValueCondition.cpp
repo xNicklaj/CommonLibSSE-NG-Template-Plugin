@@ -9,6 +9,7 @@ void QueryStatValueCondition::OnDataLoaded(void) {
 };
 void QueryStatValueCondition::EnableListener(void) {
 	RegisterPostLoadFunction(this);
+	RE::ScriptEventSourceHolder::GetSingleton()->AddEventSink(this);
 };
 void QueryStatValueCondition::SetConditionParameters(std::string stat_a, float value_a) {
 	this->stat = stat_a;

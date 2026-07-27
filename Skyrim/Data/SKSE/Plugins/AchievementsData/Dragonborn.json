@@ -198,7 +198,13 @@
             "achievementName": "$NAME_Solstheim Explorer",
             "description": "$DESC_Solstheim Explorer",
             "icon": "ACH_SolstheimExplorer.dds",
-            "conditions": []
+            "conditions": [
+                {
+                    "type": "WorldspaceDiscovery",
+                    "worldspaceID": "DLC2SolstheimWorld",
+                    "requiredCount": 30
+                }
+            ]
         }
     ]
 }

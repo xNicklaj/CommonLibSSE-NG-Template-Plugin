@@ -20,8 +20,10 @@ void Condition::SetConditionParameters(int) {}
 void Condition::SetConditionParameters(std::string, std::string, int) {}
 void Condition::SetConditionParameters(std::string) {}
 void Condition::SetConditionParameters(std::string, std::string) {}
+void Condition::SetConditionParameters(std::string, std::string, std::string) {}
 void Condition::SetConditionParameters(std::string, float) {}
 void Condition::SetConditionParameters(std::string, bool) {}
+void Condition::SetConditionParameters(std::vector<std::string>, int) {}
 bool Condition::CheckCondition() { return false; }
 void Condition::SetEventManager(eventpp::EventDispatcher<std::string, void()>* eventManager_a) {
 	this->eventManager = eventManager_a;
