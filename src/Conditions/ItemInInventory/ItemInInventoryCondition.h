@@ -11,6 +11,7 @@ public:
 
 	std::string formid;
 	int quantity = 1;
+	RE::TESForm* cachedForm = nullptr;
 private:
 	RE::BSEventNotifyControl ProcessEvent(const RE::TESContainerChangedEvent* a_event, RE::BSTEventSource<RE::TESContainerChangedEvent>*) override;
 };

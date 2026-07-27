@@ -5,6 +5,7 @@ extern void RegisterPostLoadFunction(Condition* condition);
 
 GlobalVariableStateCondition::GlobalVariableStateCondition(void) : Condition(ConditionType::GlobalVariableState) {};
 void GlobalVariableStateCondition::OnDataLoaded(void) {
+	this->cachedGlobal = static_cast<RE::TESGlobal*>(GetForm(this->formID, this->plugin));
 	CheckCondition();
 };
 void GlobalVariableStateCondition::EnableListener(void) {
@@ -17,9 +18,8 @@ void GlobalVariableStateCondition::SetConditionParameters(std::string formID_a, 
 };
 bool GlobalVariableStateCondition::CheckCondition() {
 	if(this->isMet) return true;
-	RE::TESForm* target = GetForm(this->formID, this->plugin);
-	if (!target) return false;
-	float globValue = GetGlobalVariableValue(target->formID);
+	if (!this->cachedGlobal) return false;
+	float globValue = GetGlobalVariableValue(this->cachedGlobal->formID);
 	if(globValue >= this->value) {
 		this->UnlockNotify();
 		RE::PlayerCharacter::GetSingleton()->AsPositionPlayerEventSource()->RemoveEventSink(this);

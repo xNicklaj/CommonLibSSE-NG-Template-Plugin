@@ -17,6 +17,7 @@ public:
 	std::string identifier = "";
 	std::string name = "";
 	int quantity = 0;
+	RE::TESNPC* cachedNPC = nullptr;
 private:
 	RE::BSEventNotifyControl ProcessEvent(const RE::TESDeathEvent * a_event, RE::BSTEventSource<RE::TESDeathEvent>*) override;
 	int currQuantity = 0;

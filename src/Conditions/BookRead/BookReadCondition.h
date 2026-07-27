@@ -10,6 +10,7 @@ public:
 	void Localize(std::string path) override;
 
 	std::string identifier;
+	RE::TESForm* cachedBook = nullptr;
 private:
 	RE::BSEventNotifyControl ProcessEvent(const RE::BooksRead::Event* a_event, RE::BSTEventSource<RE::BooksRead::Event>*) override;
 };

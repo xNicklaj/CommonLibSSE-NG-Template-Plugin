@@ -10,6 +10,7 @@ public:
 	bool CheckCondition();
 
 	std::string formid;
+	RE::BGSLocation* cachedLoc = nullptr;
 private:
 	RE::BSEventNotifyControl ProcessEvent(const RE::TESTrackedStatsEvent* a_event, RE::BSTEventSource<RE::TESTrackedStatsEvent>*) override;
 };

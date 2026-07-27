@@ -4,6 +4,7 @@ extern void RegisterPostLoadFunction(Condition* condition);
 
 ShoutLearnedCondition::ShoutLearnedCondition() : Condition(ConditionType::SpellLearned) {}
 void ShoutLearnedCondition::OnDataLoaded(void) {
+	this->cachedShout = static_cast<RE::TESShout*>(GetForm(this->FormID, this->plugin));
     CheckCondition();
 }
 void ShoutLearnedCondition::EnableListener(void)
@@ -27,8 +28,9 @@ RE::BSEventNotifyControl ShoutLearnedCondition::ProcessEvent(const RE::TESTracke
 
 bool ShoutLearnedCondition::CheckCondition() {
     bool found = false;
-    RE::TESShout* target = static_cast<RE::TESShout*>(GetForm(this->FormID, this->plugin));
-    RE::TESNPC* player = RE::TESNPC::LookupByID<RE::TESNPC>(GetForm("000007", "Skyrim.esm")->formID);
+    RE::TESShout* target = this->cachedShout;
+    RE::TESNPC* player = RE::PlayerCharacter::GetSingleton()->GetActorBase();
+    if(!target) return false;
 
     int wordCount = 0;
     if (!found) {

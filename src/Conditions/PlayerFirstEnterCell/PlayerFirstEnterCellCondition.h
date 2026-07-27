@@ -8,6 +8,7 @@ public:
 	void SetConditionParameters(std::string cellID) override;
 	bool CheckCondition();
 	std::string cellID;
+	RE::TESForm* cachedCell = nullptr;
 private:
 	RE::BSEventNotifyControl ProcessEvent(const RE::BGSActorCellEvent* a_event, RE::BSTEventSource<RE::BGSActorCellEvent>*) override;
 };

@@ -11,6 +11,7 @@ public:
 
 	std::string FormID;
 	int wordNumber = 1;
+	RE::TESShout* cachedShout = nullptr;
 private:
 	RE::BSEventNotifyControl ProcessEvent(const RE::TESTrackedStatsEvent* a_event, RE::BSTEventSource<RE::TESTrackedStatsEvent>*) override;
 };

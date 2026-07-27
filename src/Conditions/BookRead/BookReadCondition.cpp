@@ -6,6 +6,7 @@ extern void RegisterPostLoadFunction(Condition* condition);
 BookReadCondition::BookReadCondition() : Condition(ConditionType::BookRead) {}
 
 void BookReadCondition::OnDataLoaded(void) {
+    if (isHex(this->identifier)) this->cachedBook = GetForm(this->identifier, this->plugin);
     CheckCondition();
 }
 void BookReadCondition::EnableListener() {
@@ -23,7 +24,7 @@ bool BookReadCondition::CheckCondition() { return false; }
 RE::BSEventNotifyControl BookReadCondition::ProcessEvent(const RE::BooksRead::Event* a_event, RE::BSTEventSource<RE::BooksRead::Event>*) {
 	std::string targetName = a_event->book->GetFullName();
     bool IsHex = isHex(identifier);
-	if ((IsHex && GetForm(this->identifier,this->plugin)->formID == a_event->book->formID) || (!IsHex && targetName == this->identifier))
+	if ((IsHex && this->cachedBook && this->cachedBook->formID == a_event->book->formID) || (!IsHex && targetName == this->identifier))
 	{
         logger::info("Player met condition read book {}.", this->identifier);
         this->UnlockNotify();

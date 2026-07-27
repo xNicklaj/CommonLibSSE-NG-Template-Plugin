@@ -11,6 +11,7 @@ public:
     void SetConditionParameters(std::string formID, float value) override;
     bool CheckCondition();
 
+	RE::TESGlobal* cachedGlobal = nullptr;
 private:
     std::string formID = "";
     float value = -1;

@@ -10,6 +10,7 @@ public:
 	bool CheckCondition() override;
 
 	std::string FormID;
+	RE::SpellItem* cachedSpell = nullptr;
 private:
 	RE::BSEventNotifyControl ProcessEvent(const RE::SpellsLearned::Event* a_event, RE::BSTEventSource<RE::SpellsLearned::Event>*) override;
 };

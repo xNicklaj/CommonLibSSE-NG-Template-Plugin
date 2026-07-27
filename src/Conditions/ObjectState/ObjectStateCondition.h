@@ -11,6 +11,7 @@ public:
     void SetConditionParameters(std::string formID, bool state) override;
     bool CheckCondition();
 
+	RE::TESObjectREFR* cachedRef = nullptr;
 private:
     std::string formID = "";
     bool state = false;

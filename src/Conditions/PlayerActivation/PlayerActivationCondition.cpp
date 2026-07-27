@@ -16,9 +16,7 @@ bool PlayerActivationCondition::CheckCondition() {
 	return false;
 };
 RE::BSEventNotifyControl PlayerActivationCondition::ProcessEvent(const RE::TESActivateEvent* a_event, RE::BSTEventSource<RE::TESActivateEvent>*) {
-	RE::TESForm* target = GetForm(this->formid, this->plugin);
-	if (target == NULL) return RE::BSEventNotifyControl::kContinue;
-	if (a_event->objectActivated->GetFormID() == target->formID) {
+	if (this->cachedForm && a_event->objectActivated && a_event->objectActivated->GetFormID() == this->cachedForm->formID) {
 		logger::info("Player met condition activation {}", this->formid);
 		this->UnlockNotify();
 	}

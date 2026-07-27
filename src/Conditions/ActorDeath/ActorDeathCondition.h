@@ -9,6 +9,7 @@ public:
 	bool CheckCondition(RE::FormID);
 
 	std::string formID;
+	RE::TESForm* cachedForm = nullptr;
 private:
 	RE::BSEventNotifyControl ProcessEvent(const RE::TESDeathEvent * a_event, RE::BSTEventSource<RE::TESDeathEvent>*) override;
 };

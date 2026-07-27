@@ -4,6 +4,7 @@ extern void RegisterPostLoadFunction(Condition* condition);
 
 SpellLearnedCondition::SpellLearnedCondition() : Condition(ConditionType::SpellLearned) {}
 void SpellLearnedCondition::OnDataLoaded(void) {
+    this->cachedSpell = static_cast<RE::SpellItem*>(GetForm(this->FormID, this->plugin));
     CheckCondition();
 }
 void SpellLearnedCondition::EnableListener(void)
@@ -16,17 +17,19 @@ void SpellLearnedCondition::SetConditionParameters(std::string formID) {
 }
 RE::BSEventNotifyControl SpellLearnedCondition::ProcessEvent(const RE::SpellsLearned::Event* a_event, RE::BSTEventSource<RE::SpellsLearned::Event>*) {
     if(!a_event || !a_event->spell) return RE::BSEventNotifyControl::kContinue;
-    CheckCondition();
+    if (this->cachedSpell && a_event->spell->GetFormID() == this->cachedSpell->formID) {
+        CheckCondition();
+    }
     
     return RE::BSEventNotifyControl::kContinue;
 }
 
 bool SpellLearnedCondition::CheckCondition() {
     bool found = false;
-    RE::SpellItem* target = static_cast<RE::SpellItem*>(GetForm(this->FormID, this->plugin));
-    RE::TESNPC* player = RE::TESNPC::LookupByID<RE::TESNPC>(GetForm("000007", "Skyrim.esm")->formID);
+    RE::SpellItem* target = this->cachedSpell;
+    RE::TESNPC* player = RE::PlayerCharacter::GetSingleton()->GetActorBase();
     
-    if (RE::PlayerCharacter::GetSingleton()->HasSpell(target))
+    if (target && RE::PlayerCharacter::GetSingleton()->HasSpell(target))
         found = true;
 
     if (!found) {

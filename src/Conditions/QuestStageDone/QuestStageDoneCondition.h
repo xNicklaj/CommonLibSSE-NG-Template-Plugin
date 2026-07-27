@@ -12,6 +12,7 @@ public:
 	std::string formID;
 	int stage = 200;
 	std::string OP;
+	RE::TESQuest* cachedQuest = nullptr;
 private:
 	RE::BSEventNotifyControl ProcessEvent(const RE::TESQuestStageEvent* a_event, RE::BSTEventSource<RE::TESQuestStageEvent>*) override;
 };

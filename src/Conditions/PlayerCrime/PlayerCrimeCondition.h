@@ -16,6 +16,7 @@ public:
 
 	std::vector<std::string> factionIDs;
 	int bountyThreshold;
+	std::vector<RE::TESFaction*> cachedFactions;
 };
 
 class PlayerCrimeConditionFactory : public ConditionFactory {

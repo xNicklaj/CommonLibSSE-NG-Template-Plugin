@@ -5,6 +5,10 @@ extern void RegisterPostLoadFunction(Condition* condition);
 PlayerCrimeCondition::PlayerCrimeCondition() : Condition(ConditionType::NotSet) {}
 
 void PlayerCrimeCondition::OnDataLoaded(void) {
+	for (const auto& id : this->factionIDs) {
+		auto faction = static_cast<RE::TESFaction*>(GetForm(id, this->plugin));
+		if(faction) this->cachedFactions.push_back(faction);
+	}
 	CheckCondition();
 }
 
@@ -23,24 +27,16 @@ bool PlayerCrimeCondition::CheckCondition() {
 	if (!player) return false;
 
 	bool allMet = true;
-	for (const std::string& factionIDStr : this->factionIDs) {
-		RE::TESFaction* faction = static_cast<RE::TESFaction*>(GetForm(factionIDStr, this->plugin));
-		if (faction) {
-            uint32_t currentBounty = player->GetCrimeGoldValue(faction);
-            logger::debug("Faction {} has bounty {}", factionIDStr, currentBounty);
-			if (currentBounty < this->bountyThreshold) {
-				allMet = false;
-				break;
-			}
-		} else {
-            logger::error("Failed to find faction {}", factionIDStr);
-			// If a faction isn't found, it can't have a bounty, so we haven't met the condition.
+	for (auto faction : this->cachedFactions) {
+		uint32_t currentBounty = player->GetCrimeGoldValue(faction);
+		if (currentBounty < this->bountyThreshold) {
 			allMet = false;
 			break;
 		}
 	}
+	if (this->cachedFactions.size() != this->factionIDs.size()) allMet = false;
 
-	if (allMet && this->factionIDs.size() > 0) {
+	if (allMet && this->cachedFactions.size() > 0) {
 		logger::info("Player met condition: Faction bounties reached threshold.");
 		this->UnlockNotify();
 		RE::ScriptEventSourceHolder::GetSingleton()->RemoveEventSink(this);

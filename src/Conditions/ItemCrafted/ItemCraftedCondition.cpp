@@ -4,7 +4,7 @@ extern void RegisterPostLoadFunction(Condition* condition);
 
 ItemCraftedCondition::ItemCraftedCondition() : Condition(ConditionType::ItemCrafted) {}
 void ItemCraftedCondition::OnDataLoaded(void) {
-
+    this->cachedForm = GetForm(this->itemID, this->plugin);
 }
 void ItemCraftedCondition::EnableListener() {
 	RegisterPostLoadFunction(this);
@@ -14,7 +14,7 @@ void ItemCraftedCondition::SetConditionParameters(std::string itemID__a) {
 	this->itemID = itemID__a;
 }
 bool ItemCraftedCondition::CheckCondition(RE::FormID itemID_a) {
-	auto* target = GetForm(this->itemID, this->plugin);
+	auto* target = this->cachedForm;
 	if(target == NULL) return false;
 	if (itemID_a == target->formID) {
 		logger::info("Player met condition crafted {}.", this->itemID);

@@ -6,8 +6,7 @@ extern void RegisterPostLoadFunction(Condition* condition);
 
 BaseActorDeathCondition::BaseActorDeathCondition() : Condition(ConditionType::BaseActorDeath){};
 void BaseActorDeathCondition::OnDataLoaded(void) {
-	// TODO check if actor is already dead
-
+	if (this->isFormID) this->cachedNPC = static_cast<RE::TESNPC*>(GetForm(this->identifier, this->plugin));
 }
 void BaseActorDeathCondition::EnableListener(void) {
 	RegisterPostLoadFunction(this);
@@ -48,7 +47,7 @@ RE::BSEventNotifyControl BaseActorDeathCondition::ProcessEvent(const RE::TESDeat
 		}        
     }
 	else {
-		RE::TESNPC* target = static_cast<RE::TESNPC*>(GetForm(this->identifier, this->plugin));
+		RE::TESNPC* target = this->cachedNPC;
 		if (target == NULL) {
 			logger::error("Form {} not found.", this->identifier);
 			return RE::BSEventNotifyControl::kContinue;

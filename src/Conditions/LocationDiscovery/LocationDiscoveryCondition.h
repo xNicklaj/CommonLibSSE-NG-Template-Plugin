@@ -17,6 +17,7 @@ public:
 	std::string locationName;
 	std::string worldspaceID;
 	std::string formID;
+	RE::TESObjectREFR* cachedRef = nullptr;
 private:
 	RE::BSEventNotifyControl ProcessEvent(const RE::LocationDiscovery::Event* a_event, RE::BSTEventSource<RE::LocationDiscovery::Event>*) override;
 };

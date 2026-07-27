@@ -4,6 +4,7 @@ extern void RegisterPostLoadFunction(Condition* condition);
 
 ItemInInventoryCondition::ItemInInventoryCondition() : Condition(ConditionType::ItemInInventory) {}
 void ItemInInventoryCondition::OnDataLoaded(void) {
+	this->cachedForm = GetForm(this->formid, this->plugin);
     CheckCondition();
 }
 void ItemInInventoryCondition::EnableListener() {
@@ -29,7 +30,7 @@ bool ItemInInventoryCondition::CheckCondition() {
     RE::TESForm* target;
     for (auto& [item, data] : inventory) {
         // For fucking reasons data.first is the amount. Ok
-        target = GetForm(this->formid, this->plugin);
+        target = this->cachedForm;
         if (item != NULL && target != NULL && item->GetFormID() == target->formID) {
             quantity_l += data.first;
         }
