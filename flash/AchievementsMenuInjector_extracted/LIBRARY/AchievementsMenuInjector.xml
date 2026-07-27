@@ -1,0 +1,15 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="AchievementsMenuInjector" itemID="66c0a2d5-000001d8" linkageExportForAS="true" linkageIdentifier="AchievementsMenuInjector_id" linkageClassName="AchievementsMenuInjector" lastModified="1723900629">
+  <timeline>
+    <DOMTimeline name="AchievementsMenuInjector">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

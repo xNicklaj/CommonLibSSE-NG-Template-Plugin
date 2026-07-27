@@ -9,9 +9,11 @@
 #include "SKSE/SKSE.h"
 #include "Utility.h"
 
+#include "PaddedIMenu.h"
+
 namespace Scaleform {
 
-    class AchievementMenu : RE::IMenu, public RE::BSTEventSink<SKSE::ModCallbackEvent>, public RE::BSTEventSink<RE::MenuOpenCloseEvent>, public RE::BSTEventSink<RE::InputEvent*> {
+    class AchievementMenu : public PaddedIMenu, public RE::BSTEventSink<SKSE::ModCallbackEvent>, public RE::BSTEventSink<RE::MenuOpenCloseEvent>, public RE::BSTEventSink<RE::InputEvent*> {
     public:
         static constexpr const char* MENU_PATH = "achievementmenu";
         static constexpr const char* MENU_NAME = "AchievementMenu";
@@ -35,7 +37,7 @@ namespace Scaleform {
 
     constexpr std::string_view AchievementMenu::Name() { return AchievementMenu::MENU_NAME; }
 
-    class AchievementMenuInjector : RE::IMenu, public RE::BSTEventSink<SKSE::ModCallbackEvent> {
+    class AchievementMenuInjector : public PaddedIMenu, public RE::BSTEventSink<SKSE::ModCallbackEvent> {
     public:
         static constexpr const char* MENU_PATH = "AchievementMenuInjector";
         static constexpr const char* MENU_NAME = "AchievementMenuInjector";
@@ -52,6 +54,21 @@ namespace Scaleform {
     };
 
     constexpr std::string_view AchievementMenuInjector::Name() { return AchievementMenuInjector::MENU_NAME; }
+
+    class CategoryButtonPressHandler : public RE::GFxFunctionHandler {
+        RE::GFxValue originalFunc;
+    public:
+        CategoryButtonPressHandler(RE::GFxValue a_orig) : originalFunc(a_orig) {}
+        void Call(Params& a_params) override;
+    };
+
+    class InvalidateDataHandler : public RE::GFxFunctionHandler {
+        RE::GFxValue originalFunc;
+        RE::GFxValue listMc;
+    public:
+        InvalidateDataHandler(RE::GFxValue a_orig, RE::GFxValue a_listMc) : originalFunc(a_orig), listMc(a_listMc) {}
+        void Call(Params& a_params) override;
+    };
 
 }
 

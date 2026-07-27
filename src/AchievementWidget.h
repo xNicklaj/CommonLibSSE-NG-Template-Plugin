@@ -8,9 +8,11 @@
 
 #undef PlaySound
 
+#include "PaddedIMenu.h"
+
 namespace Scaleform {
 
-    class AchievementWidget : RE::IMenu {
+    class AchievementWidget : public PaddedIMenu {
     public:
         static constexpr const char* MENU_PATH = "achievementwidget";
         static constexpr const char* MENU_NAME = "AchievementWidget";

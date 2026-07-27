@@ -149,19 +149,128 @@ namespace Scaleform {
         return RE::BSEventNotifyControl::kContinue;
     }
 
-    void AchievementMenuInjector::Inject() {
-        RE::GFxValue menu;
-        auto ui = RE::UI::GetSingleton();
-        if (ui->GetMenu("Journal Menu")->uiMovie->GetVariable(&menu, "_root")) {
-            std::array<RE::GFxValue, 2> args;
-            args[0] = "Achievements";
-            args[1] = "-8745";
-            menu.Invoke("createEmptyMovieClip", nullptr, args.data(), args.size());
+    static int s_loadGameIndex = 0;
+
+    void CategoryButtonPressHandler::Call(Params& a_params) {
+        if (a_params.argCount > 0) {
+            RE::GFxValue event = a_params.args[0];
+            if (event.IsObject()) {
+                RE::GFxValue entry;
+                // VR sometimes uses 'item', SE uses 'entry'
+                if ((event.GetMember("entry", &entry) && entry.IsObject()) || 
+                    (event.GetMember("item", &entry) && entry.IsObject())) {
+                    
+                    RE::GFxValue isAchievements;
+                    if (entry.GetMember("isAchievements", &isAchievements) && isAchievements.IsBool() && isAchievements.GetBool()) {
+                        SKSE::ModCallbackEvent modEvent{ "AchievementsMenu_Open", RE::BSFixedString(), 0.0f, nullptr };
+                        SKSE::GetModCallbackEventSource()->SendEvent(&modEvent);
+                        return; // Do NOT call original function for our custom button
+                    }
+                }
+                
+                RE::GFxValue indexVal;
+                if (!REL::Module::IsVR() && event.GetMember("index", &indexVal) && indexVal.IsNumber()) {
+                    if (indexVal.GetNumber() > s_loadGameIndex) {
+                        event.SetMember("index", indexVal.GetNumber() - 1);
+                    }
+                }
+            }
         }
-        if (ui->GetMenu("Journal Menu")->uiMovie->GetVariable(&menu, "_root.Achievements")) {
-            std::array<RE::GFxValue, 1> args;
-            args[0] = "AchievementsMenuInjector.swf";
-            menu.Invoke("loadMovie", nullptr, args.data(), args.size());
+        
+        // Preserve 'this' context by calling ActionScript 'call' method
+        std::vector<RE::GFxValue> callArgs;
+        callArgs.push_back(*a_params.thisPtr);
+        for (uint32_t i = 0; i < a_params.argCount; ++i) {
+            callArgs.push_back(a_params.args[i]);
+        }
+        originalFunc.Invoke("call", nullptr, callArgs.data(), callArgs.size());
+    }
+
+    void InvalidateDataHandler::Call(Params& a_params) {
+        RE::GFxValue entryList;
+        if (listMc.GetMember("entryList", &entryList) && entryList.IsArray()) {
+            bool hasButton = false;
+            uint32_t len = entryList.GetArraySize();
+            
+            for (uint32_t i = 0; i < len; ++i) {
+                RE::GFxValue entry;
+                entryList.GetElement(i, &entry);
+                if (entry.IsObject()) {
+                    RE::GFxValue isAchievements;
+                    if (entry.GetMember("isAchievements", &isAchievements) && isAchievements.IsBool() && isAchievements.GetBool()) {
+                        hasButton = true;
+                        break;
+                    }
+                    
+                    RE::GFxValue text;
+                    if (entry.GetMember("text", &text) && text.IsString()) {
+                        if (std::string(text.GetString()) == "$LOAD") {
+                            s_loadGameIndex = i + 1;
+                        }
+                    }
+                }
+            }
+            
+            if (!hasButton) {
+                RE::GFxValue newButton;
+                a_params.movie->CreateObject(&newButton);
+                newButton.SetMember("text", "$ACH_MENULBL");
+                newButton.SetMember("isAchievements", true);
+                
+                RE::GFxValue spliceArgs[3];
+                spliceArgs[0] = static_cast<double>(s_loadGameIndex); // Index to insert
+                spliceArgs[1] = 0.0; // Number of items to delete
+                spliceArgs[2] = newButton;
+                entryList.Invoke("splice", nullptr, spliceArgs, 3);
+            }
+        }
+        
+        std::vector<RE::GFxValue> callArgs;
+        callArgs.push_back(*a_params.thisPtr);
+        for (uint32_t i = 0; i < a_params.argCount; ++i) {
+            callArgs.push_back(a_params.args[i]);
+        }
+        originalFunc.Invoke("call", nullptr, callArgs.data(), callArgs.size());
+    }
+
+    void AchievementMenuInjector::Inject() {
+        auto ui = RE::UI::GetSingleton();
+        auto journalMenu = ui->GetMenu("Journal Menu");
+        if (!journalMenu || !journalMenu->uiMovie) return;
+
+        RE::GFxValue isAppended;
+        if (journalMenu->uiMovie->GetVariable(&isAppended, "_root.isAchievementsMenuInjectorAppended") && isAppended.GetBool()) {
+            return; // Already injected
+        }
+
+        RE::GFxValue systemPage;
+        if (!journalMenu->uiMovie->GetVariable(&systemPage, "_root.QuestJournalFader.Menu_mc.SystemFader.Page_mc")) {
+            return;
+        }
+
+        RE::GFxValue categoryList, listMc;
+        if (!systemPage.GetMember("CategoryList_mc", &categoryList) || !categoryList.GetMember("List_mc", &listMc)) {
+            return;
+        }
+
+        journalMenu->uiMovie->SetVariable("_root.isAchievementsMenuInjectorAppended", RE::GFxValue(true));
+
+        RE::GFxValue originalOnCategoryButtonPress;
+        if (systemPage.GetMember("onCategoryButtonPress", &originalOnCategoryButtonPress) && !originalOnCategoryButtonPress.IsUndefined()) {
+            RE::GPtr<CategoryButtonPressHandler> pressHandler{new CategoryButtonPressHandler(originalOnCategoryButtonPress)};
+            RE::GFxValue newOnCategoryButtonPress;
+            journalMenu->uiMovie->CreateFunction(&newOnCategoryButtonPress, pressHandler.get());
+            systemPage.SetMember("onCategoryButtonPress", newOnCategoryButtonPress);
+        }
+
+        RE::GFxValue originalInvalidateData;
+        if (listMc.GetMember("InvalidateData", &originalInvalidateData) && !originalInvalidateData.IsUndefined()) {
+            RE::GPtr<InvalidateDataHandler> invalidateHandler{new InvalidateDataHandler(originalInvalidateData, listMc)};
+            RE::GFxValue newInvalidateData;
+            journalMenu->uiMovie->CreateFunction(&newInvalidateData, invalidateHandler.get());
+            listMc.SetMember("InvalidateData", newInvalidateData);
+            
+            // Wait for C++ engine to populate the array and call InvalidateData naturally!
         }
     }
 
