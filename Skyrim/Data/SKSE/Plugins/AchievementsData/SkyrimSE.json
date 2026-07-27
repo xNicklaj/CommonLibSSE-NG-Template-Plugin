@@ -185,7 +185,7 @@
         {
             "achievementName": "$NAME_Darkness Returns",
             "description": "$DESC_Darkness Returns",
-            "icon":  "ACH_DarknessReturns.dds",
+            "icon": "ACH_DarknessReturns.dds",
             "conditions": [
                 {
                     "type": "QuestStageDone",
@@ -593,7 +593,17 @@
             "conditions": [
                 {
                     "type": "PlayerCrime",
-                    "factions": ["0x02816D", "0x02816C", "0x02816B", "0x0267EA", "0x028170", "0x02816E", "0x0267E3", "0x02816F", "0x028171"],
+                    "factions": [
+                        "0267E3",
+                        "029DB0",
+                        "02816E",
+                        "02816B",
+                        "02816F",
+                        "028170",
+                        "02816D",
+                        "02816C",
+                        "0267EA"
+                    ],
                     "threshold": 1000
                 }
             ]
@@ -923,7 +933,7 @@
         {
             "achievementName": "$NAME_Dragon Soul",
             "description": "$DESC_Dragon Soul",
-            "icon":  "ACH_DragonSoul.dds",
+            "icon": "ACH_DragonSoul.dds",
             "conditions": [
                 {
                     "type": "DragonSoulAbsorbed",

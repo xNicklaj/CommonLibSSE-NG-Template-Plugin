@@ -26,11 +26,14 @@ bool PlayerCrimeCondition::CheckCondition() {
 	for (const std::string& factionIDStr : this->factionIDs) {
 		RE::TESFaction* faction = static_cast<RE::TESFaction*>(GetForm(factionIDStr, this->plugin));
 		if (faction) {
-			if (player->GetCrimeGoldValue(faction) < this->bountyThreshold) {
+            uint32_t currentBounty = player->GetCrimeGoldValue(faction);
+            logger::debug("Faction {} has bounty {}", factionIDStr, currentBounty);
+			if (currentBounty < this->bountyThreshold) {
 				allMet = false;
 				break;
 			}
 		} else {
+            logger::error("Failed to find faction {}", factionIDStr);
 			// If a faction isn't found, it can't have a bounty, so we haven't met the condition.
 			allMet = false;
 			break;
@@ -48,7 +51,9 @@ bool PlayerCrimeCondition::CheckCondition() {
 }
 
 RE::BSEventNotifyControl PlayerCrimeCondition::ProcessEvent(const RE::TESTrackedStatsEvent* a_event, RE::BSTEventSource<RE::TESTrackedStatsEvent>*) {
-	if (a_event->stat == "Total Bounty") {
+	std::string statName = a_event->stat.c_str();
+	logger::debug("Tracked stat event: {}", statName);
+	if (statName.find("Bounty") != std::string::npos) {
 		CheckCondition();
 	}
 	return RE::BSEventNotifyControl::kContinue;
