@@ -24,7 +24,7 @@ void BookReadCondition::Localize(std::string path) {
 		this->identifier = LocalizationManager::GetSingleton()->GetLocalizedText(path, LocalizationManager::GetSingleton()->CurrentLocale(), this->identifier);
 }
 bool BookReadCondition::CheckCondition() {
-	logger::info("Player met condition read book {}.", this->identifier);
+	logger::debug("Player met condition read book {}.", this->identifier);
 	this->UnlockNotify();
 	return true;
 }

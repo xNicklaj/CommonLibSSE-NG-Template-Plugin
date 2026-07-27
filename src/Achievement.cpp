@@ -274,21 +274,23 @@ void Achievement::EnableListener(void) {
     for (Condition* condition : conditions) {
         if (!CheckIfModIsLoaded(condition->plugin)) {
             logger::warn("Plugin {} not loaded. Skipping condition.", condition->plugin);
+            i++;
             continue;
         }
-        if (sa.conditionsState.size() > 0 && (this->conditionMet[i] = condition->Deserialize(sa.conditionsState[i]))) {
+        if (sa.conditionsState.size() > i && (this->conditionMet[i] = condition->Deserialize(sa.conditionsState[i]))) {
             condition->isMet = true;
-            // Conditions is already fulfilled
-            return;
-        };
-        condition->SetEventManager(&eventHandler);
-		condition->EnableListener();
-	}
+            // Condition is already fulfilled, do not register listeners for it
+        } else {
+            condition->SetEventManager(&eventHandler);
+            condition->EnableListener();
+        }
+        i++;
+    }
     this->hooked = true;
 }
 
 void Achievement::OnSerializationRequested() {
-    logger::info("Serialization requested.");
+    logger::debug("Serialization requested.");
     Serializer::GetSingleton()->SerializeAchievementData(this);
     AchievementManager::GetSingleton()->UpdateCache();
 }

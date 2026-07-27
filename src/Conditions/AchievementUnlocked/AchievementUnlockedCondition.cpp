@@ -22,7 +22,7 @@ bool AchievementUnlockedCondition::CheckCondition() {
 	if (Settings::GetSingleton()->GetGlobal()) {
 		SerializedAchievement sa = Serializer::GetSingleton()->DeserializeAchievementData_GLOBAL(this->achievementName);
 		if (sa.unlocked) {
-			logger::info("Player met condition unlocked {}", this->achievementName);
+			logger::debug("Player met condition unlocked {}", this->achievementName);
 			this->UnlockNotify();
 			return true;
 		}
@@ -30,7 +30,7 @@ bool AchievementUnlockedCondition::CheckCondition() {
 	else {
 		SerializedAchievement sa = Serializer::GetSingleton()->DeserializeAchievementData(this->achievementName);
 		if (sa.unlocked) {
-			logger::info("Player met condition unlocked {}", this->achievementName);
+			logger::debug("Player met condition unlocked {}", this->achievementName);
 			this->UnlockNotify();
 			return true;
 		}
@@ -39,7 +39,7 @@ bool AchievementUnlockedCondition::CheckCondition() {
 };
 void AchievementUnlockedCondition::ProcessEvent(AchievementUnlockedEvent* a_event) {
 	if (a_event->achievement->achievementName == this->achievementName && a_event->achievementGroup == this->groupName) {
-		logger::info("Player met condition unlocked {}", this->achievementName);
+		logger::debug("Player met condition unlocked {}", this->achievementName);
 		this->UnlockNotify();
 	}
 }

@@ -88,24 +88,28 @@ std::string FormIDToString(RE::FormID formID) {
 }
 
 RE::ActorValue StringToActorValue(std::string value) {
-    if (value == "alchemy") return RE::ActorValue::kAlchemy;
-    else if (value == "alteration") return RE::ActorValue::kAlteration;
-    else if (value == "marksman") return RE::ActorValue::kArchery;
-    else if (value == "block") return RE::ActorValue::kBlock;
-    else if (value == "conjuration") return RE::ActorValue::kConjuration;
-    else if (value == "destruction") return RE::ActorValue::kDestruction;
-    else if (value == "enchanting") return RE::ActorValue::kEnchanting;
-    else if (value == "heavyarmor") return RE::ActorValue::kHeavyArmor;
-    else if (value == "illusion") return RE::ActorValue::kIllusion;
-    else if (value == "lightarmor") return RE::ActorValue::kLightArmor;
-    else if (value == "lockpicking") return RE::ActorValue::kLockpicking;
-    else if (value == "onehanded") return RE::ActorValue::kOneHanded;
-    else if (value == "pickpocket") return RE::ActorValue::kPickpocket;
-    else if (value == "restoration") return RE::ActorValue::kRestoration;
-    else if (value == "smithing") return RE::ActorValue::kSmithing;
-    else if (value == "sneak") return RE::ActorValue::kSneak;
-    else if (value == "speechcraft") return RE::ActorValue::kSpeech;
-    else if (value == "twohanded") return RE::ActorValue::kTwoHanded;
+    std::string val_lower = value;
+    std::transform(val_lower.begin(), val_lower.end(), val_lower.begin(),
+                   [](unsigned char c){ return std::tolower(c); });
+    
+    if (val_lower == "alchemy") return RE::ActorValue::kAlchemy;
+    else if (val_lower == "alteration") return RE::ActorValue::kAlteration;
+    else if (val_lower == "marksman" || val_lower == "archery") return RE::ActorValue::kArchery;
+    else if (val_lower == "block") return RE::ActorValue::kBlock;
+    else if (val_lower == "conjuration") return RE::ActorValue::kConjuration;
+    else if (val_lower == "destruction") return RE::ActorValue::kDestruction;
+    else if (val_lower == "enchanting") return RE::ActorValue::kEnchanting;
+    else if (val_lower == "heavyarmor") return RE::ActorValue::kHeavyArmor;
+    else if (val_lower == "illusion") return RE::ActorValue::kIllusion;
+    else if (val_lower == "lightarmor") return RE::ActorValue::kLightArmor;
+    else if (val_lower == "lockpicking") return RE::ActorValue::kLockpicking;
+    else if (val_lower == "onehanded") return RE::ActorValue::kOneHanded;
+    else if (val_lower == "pickpocket") return RE::ActorValue::kPickpocket;
+    else if (val_lower == "restoration") return RE::ActorValue::kRestoration;
+    else if (val_lower == "smithing") return RE::ActorValue::kSmithing;
+    else if (val_lower == "sneak") return RE::ActorValue::kSneak;
+    else if (val_lower == "speechcraft" || val_lower == "speech") return RE::ActorValue::kSpeech;
+    else if (val_lower == "twohanded") return RE::ActorValue::kTwoHanded;
     return RE::ActorValue::kNone;
 }
 void ReadJson(const std::string& filePath, json* jsonData) {

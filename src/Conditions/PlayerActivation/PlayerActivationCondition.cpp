@@ -18,7 +18,7 @@ void PlayerActivationCondition::SetConditionParameters(std::string formid_a) {
 	this->formid = formid_a;
 };
 bool PlayerActivationCondition::CheckCondition() {
-	logger::info("Player met condition activation {}", this->formid);
+	logger::debug("Player met condition activation {}", this->formid);
 	this->UnlockNotify();
 	return true;
 };

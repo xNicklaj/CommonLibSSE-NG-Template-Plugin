@@ -31,7 +31,7 @@ bool ItemInInventoryCondition::CheckCondition() {
         }
     }
     if (quantity_l >= this->quantity) {
-        logger::info("Player met condition item {} quantity {}", this->formid, this->quantity);
+        logger::debug("Player met condition item {} quantity {}", this->formid, this->quantity);
         this->UnlockNotify();
         
         return true;

@@ -39,7 +39,7 @@ bool PlayerCrimeCondition::CheckCondition() {
 	if (this->cachedFactions.size() != this->factionIDs.size()) allMet = false;
 
 	if (allMet && this->cachedFactions.size() > 0) {
-		logger::info("Player met condition: Faction bounties reached threshold.");
+		logger::debug("Player met condition: Faction bounties reached threshold.");
 		this->UnlockNotify();
 		
 		return true;

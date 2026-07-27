@@ -19,7 +19,7 @@ bool DragonSoulAbsorbedCondition::CheckCondition() {
     RE::TESGlobal* absorbed = RE::TESDataHandler::GetSingleton()->LookupForm<RE::TESGlobal>(0x1C0F2, "Skyrim.esm");
     float totalAbsorbed = absorbed->value;
     if (totalAbsorbed >= quantity) {
-        logger::info("Player met condition absorbed souls {}", this->quantity);
+        logger::debug("Player met condition absorbed souls {}", this->quantity);
         this->UnlockNotify();
         
         return true;

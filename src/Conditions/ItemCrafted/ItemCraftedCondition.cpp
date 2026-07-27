@@ -16,7 +16,7 @@ void ItemCraftedCondition::SetConditionParameters(std::string itemID__a) {
 	this->itemID = itemID__a;
 }
 bool ItemCraftedCondition::CheckCondition() {
-	logger::info("Player met condition crafted item {}", this->itemID);
+	logger::debug("Player met condition crafted item {}", this->itemID);
 	this->UnlockNotify();
 	return true;
 }

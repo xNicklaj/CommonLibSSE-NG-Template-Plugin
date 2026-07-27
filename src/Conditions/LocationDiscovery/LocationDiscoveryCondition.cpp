@@ -64,7 +64,7 @@ void LocationDiscoveryCondition::OnDataLoaded(void) {
     try {
         if (this->formID != "") this->cachedRef = static_cast<RE::TESObjectREFR*>(GetForm(this->formID, this->plugin));
         if (CheckKnownLocation(this->locationName, this->formID, this->plugin)) {
-            logger::info("Player met condition found {} in {}.", this->formID != "" ? this->formID : this->locationName, this->worldspaceID);
+            logger::debug("Player met condition found {} in {}.", this->formID != "" ? this->formID : this->locationName, this->worldspaceID);
             this->UnlockNotify();
             
         };
@@ -108,7 +108,7 @@ void LocationDiscoveryCondition::OnLocationDiscoveryEvent(const RE::LocationDisc
 	}
 	
 	if (matched) {
-		logger::info("Player met condition found {} in {}.", this->formID != "" ? this->formID : this->locationName, this->worldspaceID);
+		logger::debug("Player met condition found {} in {}.", this->formID != "" ? this->formID : this->locationName, this->worldspaceID);
 		this->UnlockNotify();
 	}
 }

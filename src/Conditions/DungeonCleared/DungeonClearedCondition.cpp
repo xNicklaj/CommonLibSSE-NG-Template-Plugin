@@ -22,7 +22,7 @@ bool DungeonClearedCondition::CheckCondition() {
     RE::BGSLocation* target = this->cachedLoc;
     if (!target) return false;
     if (target->IsCleared()) {
-        logger::info("Player met condition location {} cleared.", this->formid);
+        logger::debug("Player met condition location {} cleared.", this->formid);
         UnlockNotify();
         
         return true;

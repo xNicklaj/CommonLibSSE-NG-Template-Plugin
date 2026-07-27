@@ -46,6 +46,7 @@ public:
 	void RegisterMenuListener(Condition* condition);
 
 	void EnableListeners();
+	void EvaluateTrackedStats();
 
 protected:
 	RE::BSEventNotifyControl ProcessEvent(const RE::TESQuestStageEvent* a_event, RE::BSTEventSource<RE::TESQuestStageEvent>* a_eventSource) override;

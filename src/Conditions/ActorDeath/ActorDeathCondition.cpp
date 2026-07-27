@@ -25,9 +25,15 @@ void ActorDeathCondition::SetConditionParameters(std::string formID_a) {
 	this->formID = formID_a;
 };
 bool ActorDeathCondition::CheckCondition() {
-	logger::info("Player met condition dead form {}", this->formID);
-	this->UnlockNotify();
-	return true;
+    if (this->isMet) return true;
+    RE::Actor* actor = this->cachedForm ? this->cachedForm->As<RE::Actor>() : nullptr;
+    if (!actor) return false;
+    if (actor->IsDead()) {
+        logger::debug("Player met condition dead form {}", this->formID);
+        this->UnlockNotify();
+        return true;
+    }
+    return false;
 };
 ;
 

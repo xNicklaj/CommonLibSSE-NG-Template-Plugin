@@ -20,6 +20,9 @@ void SpellLearnedCondition::SetConditionParameters(std::string formID) {
 
 
 bool SpellLearnedCondition::CheckCondition() {
+    if (this->isMet) return true;
+    if (!this->cachedSpell) return false;
+
     bool found = false;
     RE::SpellItem* target = this->cachedSpell;
     RE::TESNPC* player = RE::PlayerCharacter::GetSingleton()->GetActorBase();
@@ -38,7 +41,7 @@ bool SpellLearnedCondition::CheckCondition() {
     }
     
     if (found) {
-        logger::info("Player met condition learned {}:{}", target->fullName.c_str(), FormIDToString(target->formID));
+        logger::debug("Player met condition learned {}:{}", target->fullName.c_str(), FormIDToString(target->formID));
         this->UnlockNotify();
         
     }

@@ -24,7 +24,7 @@ void BaseActorDeathCondition::SetEditorID(bool a_isEditorID) {
 }
 bool BaseActorDeathCondition::CheckCondition() {
 	if (this->currQuantity >= this->quantity) {
-		logger::info("Player met condition actor {} dead.", this->identifier);
+		logger::debug("Player met condition actor {} dead.", this->identifier);
 		this->UnlockNotify();
 		return true;
 	}

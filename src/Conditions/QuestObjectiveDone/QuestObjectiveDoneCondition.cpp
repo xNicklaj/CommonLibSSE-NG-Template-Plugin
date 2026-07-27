@@ -26,6 +26,7 @@ void QuestObjectiveDoneCondition::EnableListener(void)
 bool QuestObjectiveDoneCondition::CheckCondition() {
     bool found = false;
     if (this->isMet) return true;
+    if (!this->quest) return false;
     for (auto& objective_l : quest->objectives) {
 		if (objective_l->index != this->objective) continue;
         found = true;
@@ -42,7 +43,7 @@ bool QuestObjectiveDoneCondition::CheckCondition() {
         }
 
         if (objective_l->index == this->objective && (objective_l->state == RE::QUEST_OBJECTIVE_STATE::kDisplayed || objective_l->state == RE::QUEST_OBJECTIVE_STATE::kCompletedDisplayed )) {
-            logger::info("Player met condition quest {} objective {}", this->formID, this->objective);
+            logger::debug("Player met condition quest {} objective {}", this->formID, this->objective);
             this->UnlockNotify();
             
             return true;

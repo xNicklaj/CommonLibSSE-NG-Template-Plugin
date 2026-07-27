@@ -21,6 +21,9 @@ void ShoutLearnedCondition::SetConditionParameters(std::string formID_a, int wor
 
 
 bool ShoutLearnedCondition::CheckCondition() {
+    if (this->isMet) return true;
+    if (!this->cachedShout) return false;
+
     bool found = false;
     RE::TESShout* target = this->cachedShout;
     RE::TESNPC* player = RE::PlayerCharacter::GetSingleton()->GetActorBase();
@@ -43,7 +46,7 @@ bool ShoutLearnedCondition::CheckCondition() {
     }
     
     if (found && wordCount >= this->wordNumber) {
-        logger::info("Player met condition learned shout {}:{}", target->fullName.c_str(), FormIDToString(target->formID));
+        logger::debug("Player met condition learned shout {}:{}", target->fullName.c_str(), FormIDToString(target->formID));
         this->UnlockNotify();
         
     }

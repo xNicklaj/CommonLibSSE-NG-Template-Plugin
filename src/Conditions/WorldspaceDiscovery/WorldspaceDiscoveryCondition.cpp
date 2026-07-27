@@ -44,7 +44,7 @@ bool WorldspaceDiscoveryCondition::CheckCondition() {
 	}
 	
 	if (count >= this->requiredCount && this->requiredCount > 0) {
-		logger::info("Player met condition: Discovered {} locations in {}.", this->requiredCount, this->worldspaceID);
+		logger::debug("Player met condition: Discovered {} locations in {}.", this->requiredCount, this->worldspaceID);
 		this->UnlockNotify();
 		
 		return true;

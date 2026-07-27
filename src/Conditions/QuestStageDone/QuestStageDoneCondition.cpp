@@ -25,13 +25,13 @@ void QuestStageDoneCondition::EnableListener(void)
 bool QuestStageDoneCondition::CheckCondition() {
     if (this->isMet) return true;
     if ((this->OP == ">=" || this->OP == "GT") && (this->cachedQuest ? this->cachedQuest->GetCurrentStageID() : 0) >= stage) {
-        logger::info("Quest {} met condition stage {}", this->formID, this->stage);
+        logger::debug("Quest {} met condition stage {}", this->formID, this->stage);
         this->UnlockNotify();
         
         return true;
     }
     else if ((this->OP == "==" || this->OP == "EQ") && (this->cachedQuest ? this->cachedQuest->GetCurrentStageID() : 0) == stage) {
-        logger::info("Quest {} met condition stage {}", this->formID, this->stage);
+        logger::debug("Quest {} met condition stage {}", this->formID, this->stage);
         this->UnlockNotify();
         
         return true;

@@ -20,9 +20,13 @@ void PlayerSkillLevelCondition::SetConditionParameters(std::string skill_a, int 
 
 bool PlayerSkillLevelCondition::CheckCondition() {
     RE::ActorValue skill_l = StringToActorValue(this->skill);
+    if (skill_l == RE::ActorValue::kNone) {
+        logger::error("Invalid skill: {}", this->skill);
+        return false;
+    }
     float skillLevel = RE::PlayerCharacter::GetSingleton()->AsActorValueOwner()->GetActorValue(skill_l);
     if (!this->isMet && skillLevel >= this->level) {
-        logger::info("Skill {} met condition level {}", this->skill, skillLevel);
+        logger::debug("Skill {} met condition level {}", this->skill, skillLevel);
         this->UnlockNotify();
         
         return true;

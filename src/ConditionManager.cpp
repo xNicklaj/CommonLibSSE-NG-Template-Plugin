@@ -83,6 +83,17 @@ void ConditionManager::DispatchToBucket(std::vector<Condition*>& bucket) {
 	}
 }
 
+void ConditionManager::EvaluateTrackedStats() {
+	for (auto it = trackedStatListeners.begin(); it != trackedStatListeners.end();) {
+		DispatchToBucket(it->second);
+		if (it->second.empty()) {
+			it = trackedStatListeners.erase(it);
+		} else {
+			++it;
+		}
+	}
+}
+
 void ConditionManager::DispatchToBucketFormID(RE::FormID formID, std::unordered_map<RE::FormID, std::vector<Condition*>>& map) {
 	auto itMap = map.find(formID);
 	if (itMap != map.end()) {
@@ -118,6 +129,7 @@ RE::BSEventNotifyControl ConditionManager::ProcessEvent(const RE::SkillIncrease:
 
 RE::BSEventNotifyControl ConditionManager::ProcessEvent(const RE::ItemCrafted::Event* a_event, RE::BSTEventSource<RE::ItemCrafted::Event>*) {
 	if (a_event && a_event->item) DispatchToBucketFormID(a_event->item->formID, itemCraftedListeners);
+	EvaluateTrackedStats();
 	return RE::BSEventNotifyControl::kContinue;
 }
 
@@ -214,15 +226,22 @@ RE::BSEventNotifyControl ConditionManager::ProcessEvent(const RE::TESDeathEvent*
 			}
 		}
 	}
+	EvaluateTrackedStats();
 	return RE::BSEventNotifyControl::kContinue;
 }
 
 RE::BSEventNotifyControl ConditionManager::ProcessEvent(const RE::TESTrackedStatsEvent* a_event, RE::BSTEventSource<RE::TESTrackedStatsEvent>*) {
 	if (a_event) {
-		auto itMap = trackedStatListeners.find(a_event->stat.c_str());
-		if (itMap != trackedStatListeners.end()) {
-			DispatchToBucket(itMap->second);
-			if (itMap->second.empty()) trackedStatListeners.erase(itMap);
+		logger::debug("Tracked stat event fired for stat: '{}'", a_event->stat.c_str());
+		for (auto it = trackedStatListeners.begin(); it != trackedStatListeners.end();) {
+			if (_stricmp(it->first.c_str(), a_event->stat.c_str()) == 0) {
+				DispatchToBucket(it->second);
+				if (it->second.empty()) {
+					it = trackedStatListeners.erase(it);
+					continue;
+				}
+			}
+			++it;
 		}
 	}
 	return RE::BSEventNotifyControl::kContinue;
@@ -230,5 +249,6 @@ RE::BSEventNotifyControl ConditionManager::ProcessEvent(const RE::TESTrackedStat
 
 RE::BSEventNotifyControl ConditionManager::ProcessEvent(const RE::MenuOpenCloseEvent* a_event, RE::BSTEventSource<RE::MenuOpenCloseEvent>*) {
 	if (a_event) DispatchToBucket(menuListeners);
+	EvaluateTrackedStats();
 	return RE::BSEventNotifyControl::kContinue;
 }

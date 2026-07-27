@@ -19,7 +19,7 @@ void PlayerFirstEnterCellCondition::EnableListener(void)
 }
 
 bool PlayerFirstEnterCellCondition::CheckCondition() {
-    logger::info("Player met condition entered cell {}.", this->cellID);
+    logger::debug("Player met condition entered cell {}.", this->cellID);
     this->UnlockNotify();
     return true;
 }
