@@ -1,6 +1,6 @@
 #include "../Condition.h"
 
-class PlayerActivationCondition : public Condition, public RE::BSTEventSink<RE::TESActivateEvent> {
+class PlayerActivationCondition : public Condition {
 public:
 	PlayerActivationCondition();
 	void OnDataLoaded(void) override;
@@ -11,7 +11,7 @@ public:
 	std::string formid;
 	RE::TESForm* cachedForm = nullptr;
 private:
-	RE::BSEventNotifyControl ProcessEvent(const RE::TESActivateEvent* a_event, RE::BSTEventSource<RE::TESActivateEvent>*) override;
+	
 };
 
 class PlayerActivationConditionFactory : public ConditionFactory {

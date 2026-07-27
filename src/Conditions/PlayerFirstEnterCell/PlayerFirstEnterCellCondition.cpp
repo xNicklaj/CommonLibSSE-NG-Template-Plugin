@@ -1,4 +1,5 @@
 #include "PlayerFirstEnterCellCondition.h"
+#include "../../ConditionManager.h"
 
 extern void RegisterPostLoadFunction(Condition* condition);
 
@@ -7,30 +8,20 @@ void PlayerFirstEnterCellCondition::SetConditionParameters(std::string cellID_a)
     this->cellID = cellID_a;
 }
 void PlayerFirstEnterCellCondition::OnDataLoaded(void) {
-    // Check that quest hasn't been completed already
-    CheckCondition();
+	RE::TESForm* cell = GetForm(this->cellID, this->plugin);
+	if (cell) ConditionManager::GetSingleton()->RegisterActorCellListener(cell->formID, this);
 }
 void PlayerFirstEnterCellCondition::EnableListener(void)
 {
     RegisterPostLoadFunction(this);
 
     // Bind sink for quest stage change event
-    RE::PlayerCharacter::GetSingleton()->AsBGSActorCellEventSource()->AddEventSink(this);
 }
-RE::BSEventNotifyControl PlayerFirstEnterCellCondition::ProcessEvent(const RE::BGSActorCellEvent* event, RE::BSTEventSource<RE::BGSActorCellEvent>*) {
-    logger::debug("Player entered cell {}", event->cellID);
-    RE::TESForm* target = GetForm(this->cellID, this->plugin);
-    if (target == NULL) return RE::BSEventNotifyControl::kContinue;
-    if (event->cellID == target->formID) {
-        logger::info("Player met condition entered cell {}.", this->cellID);
-        this->UnlockNotify();
-        RE::PlayerCharacter::GetSingleton()->AsBGSActorCellEventSource()->RemoveEventSink(this);
-    }
-    return RE::BSEventNotifyControl::kContinue;
-}
-bool PlayerFirstEnterCellCondition::CheckCondition() {
 
-    return false;
+bool PlayerFirstEnterCellCondition::CheckCondition() {
+    logger::info("Player met condition entered cell {}.", this->cellID);
+    this->UnlockNotify();
+    return true;
 }
 
 PlayerFirstEnterCellConditionFactory::PlayerFirstEnterCellConditionFactory() : ConditionFactory() {};

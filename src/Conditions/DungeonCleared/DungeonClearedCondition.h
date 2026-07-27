@@ -1,6 +1,6 @@
 #include "../Condition.h"
 
-class DungeonClearedCondition : public Condition, public RE::BSTEventSink<RE::TESTrackedStatsEvent> {
+class DungeonClearedCondition : public Condition {
 public:
 	DungeonClearedCondition();
 
@@ -12,7 +12,7 @@ public:
 	std::string formid;
 	RE::BGSLocation* cachedLoc = nullptr;
 private:
-	RE::BSEventNotifyControl ProcessEvent(const RE::TESTrackedStatsEvent* a_event, RE::BSTEventSource<RE::TESTrackedStatsEvent>*) override;
+	
 };
 
 class DungeonClearedConditionFactory : public ConditionFactory {

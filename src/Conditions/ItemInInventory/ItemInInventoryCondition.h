@@ -1,6 +1,6 @@
 #include "../Condition.h"
 
-class ItemInInventoryCondition : public Condition, public RE::BSTEventSink<RE::TESContainerChangedEvent> {
+class ItemInInventoryCondition : public Condition {
 public:
 	ItemInInventoryCondition();
 
@@ -13,7 +13,7 @@ public:
 	int quantity = 1;
 	RE::TESForm* cachedForm = nullptr;
 private:
-	RE::BSEventNotifyControl ProcessEvent(const RE::TESContainerChangedEvent* a_event, RE::BSTEventSource<RE::TESContainerChangedEvent>*) override;
+	
 };
 
 class ItemInInventoryConditionFactory : public ConditionFactory {

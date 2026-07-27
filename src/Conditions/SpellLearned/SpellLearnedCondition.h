@@ -1,6 +1,6 @@
 #include "../Condition.h"
 
-class SpellLearnedCondition : public Condition, public RE::BSTEventSink<RE::SpellsLearned::Event>
+class SpellLearnedCondition : public Condition
 {
 public:
 	SpellLearnedCondition();
@@ -12,7 +12,7 @@ public:
 	std::string FormID;
 	RE::SpellItem* cachedSpell = nullptr;
 private:
-	RE::BSEventNotifyControl ProcessEvent(const RE::SpellsLearned::Event* a_event, RE::BSTEventSource<RE::SpellsLearned::Event>*) override;
+	
 };
 
 class SpellLearnedConditionFactory : public ConditionFactory

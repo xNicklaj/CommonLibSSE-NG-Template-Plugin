@@ -1,5 +1,6 @@
 #include "BaseActorDeathCondition.h"
 #include "../../CommonFunctions.h"
+#include "../../ConditionManager.h"
 
 
 extern void RegisterPostLoadFunction(Condition* condition);
@@ -7,10 +8,11 @@ extern void RegisterPostLoadFunction(Condition* condition);
 BaseActorDeathCondition::BaseActorDeathCondition() : Condition(ConditionType::BaseActorDeath){};
 void BaseActorDeathCondition::OnDataLoaded(void) {
 	if (this->isFormID) this->cachedNPC = static_cast<RE::TESNPC*>(GetForm(this->identifier, this->plugin));
+	if(this->isFormID && this->cachedNPC) ConditionManager::GetSingleton()->RegisterDeathListener(this->cachedNPC->formID, this); else ConditionManager::GetSingleton()->RegisterDeathGenericListener(this);
 }
 void BaseActorDeathCondition::EnableListener(void) {
 	RegisterPostLoadFunction(this);
-	RE::ScriptEventSourceHolder::GetSingleton()->AddEventSink(this);
+	
 };
 void BaseActorDeathCondition::SetConditionParameters(std::string identifier_a, int quantity_a) {
 	this->isFormID = isHex(identifier_a);
@@ -24,49 +26,39 @@ bool BaseActorDeathCondition::CheckCondition() {
 	if (this->currQuantity >= this->quantity) {
 		logger::info("Player met condition actor {} dead.", this->identifier);
 		this->UnlockNotify();
-		RE::ScriptEventSourceHolder::GetSingleton()->RemoveEventSink(this);
+		return true;
 	}
 	return false;
-};
-RE::BSEventNotifyControl BaseActorDeathCondition::ProcessEvent(const RE::TESDeathEvent* a_event, RE::BSTEventSource<RE::TESDeathEvent>*) {
-	bool isTarget = false;
-	if (!a_event->actorDying->IsDead()) return RE::BSEventNotifyControl::kContinue;
-	if (!this->isFormID && !this->isEditorID && a_event->dead) {
-        logger::debug("Actor {} is dead. Reference found using name {}", a_event->actorDying->GetName(), this->identifier);
-		if (a_event->actorDying->GetName() == this->identifier) {
-            currQuantity++;
-            isTarget = true;
-		}
-    } else if (this->isEditorID && a_event->dead) {
-        std::string targetEditorID = clib_util::editorID::get_editorID(a_event->actorDying->GetBaseObject());
-        logger::debug("Actor {} is dead. Reference found using editorID {}.", a_event->actorDying->GetName(), targetEditorID);
-        
-        if (targetEditorID == this->identifier) {
-            currQuantity++;
-            isTarget = true;
-		}        
-    }
-	else {
-		RE::TESNPC* target = this->cachedNPC;
-		if (target == NULL) {
-			logger::error("Form {} not found.", this->identifier);
-			return RE::BSEventNotifyControl::kContinue;
-		}
-		if (a_event->dead) {
-            logger::debug("Actor {} is dead. Reference found using formID {}", a_event->actorDying->GetName(), this->identifier);
-			if (a_event->actorDying->data.objectReference->As<RE::TESNPC>()->GetFormID() == target->formID) {
-                currQuantity++;
-                isTarget = true;
-			}
-		}
-	}
-	if (isTarget) {
-		if (!this->CheckCondition()) this->eventManager->dispatch("SerializationRequested");
-		else this->UnlockNotify();
-	}
+}
 
-	return RE::BSEventNotifyControl::kContinue;
-};
+void BaseActorDeathCondition::OnDeathEvent(const RE::TESDeathEvent* event) {
+	if (!event || !event->actorDying || !event->dead) return;
+	
+	auto objRefr = event->actorDying->data.objectReference;
+	if (!objRefr) return;
+	
+	auto npc = objRefr->As<RE::TESNPC>();
+	if (!npc) return;
+	
+	bool matched = false;
+	if (this->isFormID) {
+		if (this->cachedNPC && npc->GetFormID() == this->cachedNPC->GetFormID()) {
+			matched = true;
+		}
+	} else if (this->isEditorID) {
+		std::string editorID = clib_util::editorID::get_editorID(npc);
+		if (editorID == this->identifier) matched = true;
+	} else {
+		std::string name = npc->GetName();
+		if (name == this->identifier) matched = true;
+	}
+	
+	if (matched) {
+		this->currQuantity++;
+		this->CheckCondition();
+	}
+}
+;
 
 bool BaseActorDeathCondition::Deserialize(int value) {
 	this->currQuantity = value;

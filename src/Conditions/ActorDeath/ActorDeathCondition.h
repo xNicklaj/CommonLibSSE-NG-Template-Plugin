@@ -1,17 +1,17 @@
 #include "../Condition.h"
 
-class ActorDeathCondition : public Condition, public RE::BSTEventSink<RE::TESDeathEvent> {
+class ActorDeathCondition : public Condition {
 public:
 	ActorDeathCondition();
 	void OnDataLoaded(void) override;
 	void EnableListener(void) override;
 	void SetConditionParameters(std::string) override;
-	bool CheckCondition(RE::FormID);
+	bool CheckCondition() override;
 
 	std::string formID;
 	RE::TESForm* cachedForm = nullptr;
 private:
-	RE::BSEventNotifyControl ProcessEvent(const RE::TESDeathEvent * a_event, RE::BSTEventSource<RE::TESDeathEvent>*) override;
+	
 };
 
 class ActorDeathConditionFactory : public ConditionFactory {

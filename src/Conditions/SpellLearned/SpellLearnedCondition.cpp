@@ -1,28 +1,23 @@
 #include "SpellLearnedCondition.h"
+#include "../../ConditionManager.h"
 
 extern void RegisterPostLoadFunction(Condition* condition);
 
 SpellLearnedCondition::SpellLearnedCondition() : Condition(ConditionType::SpellLearned) {}
 void SpellLearnedCondition::OnDataLoaded(void) {
     this->cachedSpell = static_cast<RE::SpellItem*>(GetForm(this->FormID, this->plugin));
+	if (this->cachedSpell) ConditionManager::GetSingleton()->RegisterSpellLearnedListener(this->cachedSpell->formID, this);
     CheckCondition();
 }
 void SpellLearnedCondition::EnableListener(void)
 {
     RegisterPostLoadFunction(this);
-    RE::SpellsLearned::GetEventSource()->AddEventSink(this);
+    
 }
 void SpellLearnedCondition::SetConditionParameters(std::string formID) {
     this->FormID = formID;
 }
-RE::BSEventNotifyControl SpellLearnedCondition::ProcessEvent(const RE::SpellsLearned::Event* a_event, RE::BSTEventSource<RE::SpellsLearned::Event>*) {
-    if(!a_event || !a_event->spell) return RE::BSEventNotifyControl::kContinue;
-    if (this->cachedSpell && a_event->spell->GetFormID() == this->cachedSpell->formID) {
-        CheckCondition();
-    }
-    
-    return RE::BSEventNotifyControl::kContinue;
-}
+
 
 bool SpellLearnedCondition::CheckCondition() {
     bool found = false;
@@ -45,7 +40,7 @@ bool SpellLearnedCondition::CheckCondition() {
     if (found) {
         logger::info("Player met condition learned {}:{}", target->fullName.c_str(), FormIDToString(target->formID));
         this->UnlockNotify();
-        RE::SpellsLearned::GetEventSource()->RemoveEventSink(this);
+        
     }
     return false;
 }

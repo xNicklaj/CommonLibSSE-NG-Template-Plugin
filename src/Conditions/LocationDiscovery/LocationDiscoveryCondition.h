@@ -4,13 +4,14 @@
 #include "../Condition.h"
 // CANNOT USE DUE TO IT NOT BEING MAPPED INSIDE RE
 
-class LocationDiscoveryCondition : public Condition, public RE::BSTEventSink<RE::LocationDiscovery::Event> {
+class LocationDiscoveryCondition : public Condition {
 public:
 	LocationDiscoveryCondition();
 	void OnDataLoaded(void) override;
 	void EnableListener(void) override;
 	void SetConditionParameters(std::string locationName_a, std::string worldspaceID_a, std::string formID_a);
-	bool CheckCondition(std::string locationName_l, std::string worldspaceID_l);
+	bool CheckCondition() override;
+	void OnLocationDiscoveryEvent(const RE::LocationDiscovery::Event* event) override;
 
 	void Localize(std::string path) override;
 
@@ -19,7 +20,7 @@ public:
 	std::string formID;
 	RE::TESObjectREFR* cachedRef = nullptr;
 private:
-	RE::BSEventNotifyControl ProcessEvent(const RE::LocationDiscovery::Event* a_event, RE::BSTEventSource<RE::LocationDiscovery::Event>*) override;
+	
 };
 
 class LocationDiscoveryConditionFactory : public ConditionFactory {

@@ -1,14 +1,16 @@
 #include "DragonSoulsAbsorbedCondition.h"
+#include "../../ConditionManager.h"
 
 extern void RegisterPostLoadFunction(Condition* condition);
 
 DragonSoulAbsorbedCondition::DragonSoulAbsorbedCondition() : Condition(ConditionType::DragonSoulAbsorbed) {}
 void DragonSoulAbsorbedCondition::OnDataLoaded(void) {
+	ConditionManager::GetSingleton()->RegisterDragonSoulListener(this);
     CheckCondition();
 }
 void DragonSoulAbsorbedCondition::EnableListener() {
     RegisterPostLoadFunction(this);
-    RE::DragonSoulsGained::GetEventSource()->AddEventSink(this);
+    
 }
 void DragonSoulAbsorbedCondition::SetConditionParameters(int quantity_a) {
     this->quantity = quantity_a;
@@ -19,16 +21,12 @@ bool DragonSoulAbsorbedCondition::CheckCondition() {
     if (totalAbsorbed >= quantity) {
         logger::info("Player met condition absorbed souls {}", this->quantity);
         this->UnlockNotify();
-        RE::DragonSoulsGained::GetEventSource()->RemoveEventSink(this);
+        
         return true;
     }
     return false;
 }
-RE::BSEventNotifyControl DragonSoulAbsorbedCondition::ProcessEvent(const RE::DragonSoulsGained::Event*, RE::BSTEventSource<RE::DragonSoulsGained::Event>*) {
-    // TODO tutto ma triggera
-    CheckCondition();
-    return RE::BSEventNotifyControl::kContinue;
-}
+
 
 DragonSoulAbsorbedConditionFactory::DragonSoulAbsorbedConditionFactory() : ConditionFactory() {};
 Condition* DragonSoulAbsorbedConditionFactory::createCondition() {

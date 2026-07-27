@@ -1,6 +1,6 @@
 #include "../Condition.h"
 
-class PlayerLevelCondition : public Condition, public RE::BSTEventSink<RE::LevelIncrease::Event> {
+class PlayerLevelCondition : public Condition {
 public:
 	PlayerLevelCondition();
 
@@ -11,7 +11,7 @@ public:
 
 	int level = 0;
 private:
-	RE::BSEventNotifyControl ProcessEvent(const RE::LevelIncrease::Event* a_event, RE::BSTEventSource<RE::LevelIncrease::Event>*) override;
+	
 };
 
 class PlayerLevelConditionFactory : public ConditionFactory {

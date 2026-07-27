@@ -1,33 +1,26 @@
 #include "ItemCraftedCondition.h"
+#include "../../ConditionManager.h"
 
 extern void RegisterPostLoadFunction(Condition* condition);
 
 ItemCraftedCondition::ItemCraftedCondition() : Condition(ConditionType::ItemCrafted) {}
 void ItemCraftedCondition::OnDataLoaded(void) {
     this->cachedForm = GetForm(this->itemID, this->plugin);
+	if (this->cachedForm) ConditionManager::GetSingleton()->RegisterItemCraftedListener(this->cachedForm->formID, this);
 }
 void ItemCraftedCondition::EnableListener() {
 	RegisterPostLoadFunction(this);
-	RE::ItemCrafted::GetEventSource()->AddEventSink(this);
+	
 }
 void ItemCraftedCondition::SetConditionParameters(std::string itemID__a) {
 	this->itemID = itemID__a;
 }
-bool ItemCraftedCondition::CheckCondition(RE::FormID itemID_a) {
-	auto* target = this->cachedForm;
-	if(target == NULL) return false;
-	if (itemID_a == target->formID) {
-		logger::info("Player met condition crafted {}.", this->itemID);
-		this->UnlockNotify();
-		RE::ItemCrafted::GetEventSource()->RemoveEventSink(this);
-		return true;
-	}
-	return false;
+bool ItemCraftedCondition::CheckCondition() {
+	logger::info("Player met condition crafted item {}", this->itemID);
+	this->UnlockNotify();
+	return true;
 }
-RE::BSEventNotifyControl ItemCraftedCondition::ProcessEvent(const RE::ItemCrafted::Event* a_event, RE::BSTEventSource<RE::ItemCrafted::Event>*) {
-	CheckCondition(a_event->item->formID);
-	return RE::BSEventNotifyControl::kContinue;
-}
+
 
 ItemCraftedConditionFactory::ItemCraftedConditionFactory() : ConditionFactory() {};
 Condition* ItemCraftedConditionFactory::createCondition() {

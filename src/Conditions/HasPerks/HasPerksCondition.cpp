@@ -1,4 +1,5 @@
 #include "HasPerksCondition.h"
+#include "../../ConditionManager.h"
 
 HasPerksCondition::HasPerksCondition(void) : Condition(ConditionType::HasPerks) {}
 
@@ -8,7 +9,7 @@ void HasPerksCondition::SetConditionParameters(std::vector<std::string> formIDs_
 }
 
 void HasPerksCondition::EnableListener(void) {
-	RE::UI::GetSingleton()->AddEventSink(this);
+	
 }
 
 void HasPerksCondition::OnDataLoaded(void) {
@@ -21,6 +22,7 @@ void HasPerksCondition::OnDataLoaded(void) {
 			logger::error("Failed to find perk {}", formIDStr);
 		}
 	}
+	ConditionManager::GetSingleton()->RegisterMenuListener(this);
 	CheckCondition();
 }
 
@@ -50,19 +52,14 @@ bool HasPerksCondition::CheckCondition() {
 	
 	if (count >= this->threshold) {
 		this->UnlockNotify();
-		RE::UI::GetSingleton()->RemoveEventSink(this);
+		
 		return true;
 	}
 	
 	return false;
 }
 
-RE::BSEventNotifyControl HasPerksCondition::ProcessEvent(const RE::MenuOpenCloseEvent* a_event, RE::BSTEventSource<RE::MenuOpenCloseEvent>*) {
-	if (a_event && !a_event->opening) {
-		CheckCondition();
-	}
-	return RE::BSEventNotifyControl::kContinue;
-}
+
 
 HasPerksConditionFactory::HasPerksConditionFactory() : ConditionFactory() {}
 

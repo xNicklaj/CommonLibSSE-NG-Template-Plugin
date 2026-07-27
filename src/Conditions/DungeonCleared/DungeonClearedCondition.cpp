@@ -1,4 +1,5 @@
 #include "DungeonClearedCondition.h"
+#include "../../ConditionManager.h"
 
 extern void RegisterPostLoadFunction(Condition* condition);
 
@@ -7,11 +8,12 @@ extern void RegisterPostLoadFunction(Condition* condition);
 DungeonClearedCondition::DungeonClearedCondition() : Condition(ConditionType::LocationCleared) {}
 void DungeonClearedCondition::OnDataLoaded(void) {
     this->cachedLoc = static_cast<RE::BGSLocation*>(GetForm(this->formid, this->plugin));
+	ConditionManager::GetSingleton()->RegisterTrackedStatListener("Dungeons Cleared", this);
     CheckCondition();
 }
 void DungeonClearedCondition::EnableListener() {
     RegisterPostLoadFunction(this);
-    RE::ScriptEventSourceHolder::GetSingleton()->AddEventSink(this);
+    
 }
 void DungeonClearedCondition::SetConditionParameters(std::string formid_a) {
     this->formid = formid_a;
@@ -22,17 +24,12 @@ bool DungeonClearedCondition::CheckCondition() {
     if (target->IsCleared()) {
         logger::info("Player met condition location {} cleared.", this->formid);
         UnlockNotify();
-        RE::ScriptEventSourceHolder::GetSingleton()->AddEventSink(this);
+        
         return true;
     }
     return false;
 }
-RE::BSEventNotifyControl DungeonClearedCondition::ProcessEvent(const RE::TESTrackedStatsEvent* a_event, RE::BSTEventSource<RE::TESTrackedStatsEvent>*) {
-    if (a_event->stat == "Dungeons Cleared") {
-        CheckCondition();
-    }
-    return RE::BSEventNotifyControl::kContinue;
-}
+
 
 DungeonClearedConditionFactory::DungeonClearedConditionFactory() : ConditionFactory() {};
 Condition* DungeonClearedConditionFactory::createCondition() {

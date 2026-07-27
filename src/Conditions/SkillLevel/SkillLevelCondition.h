@@ -1,6 +1,6 @@
 #include "../Condition.h"
 
-class PlayerSkillLevelCondition : public Condition, public RE::BSTEventSink<RE::SkillIncrease::Event> {
+class PlayerSkillLevelCondition : public Condition {
 public:
 	PlayerSkillLevelCondition();
 
@@ -13,7 +13,7 @@ public:
 	int level = 0;
 
 private:
-	RE::BSEventNotifyControl ProcessEvent(const RE::SkillIncrease::Event* a_event, RE::BSTEventSource<RE::SkillIncrease::Event>*) override;
+	
 };
 
 class PlayerSkillLevelConditionFactory : public ConditionFactory {

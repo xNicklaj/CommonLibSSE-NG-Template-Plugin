@@ -1,4 +1,5 @@
 #include "HasPerkCondition.h"
+#include "../../ConditionManager.h"
 
 HasPerkCondition::HasPerkCondition(void) : Condition(ConditionType::HasPerk) {}
 
@@ -7,7 +8,7 @@ void HasPerkCondition::SetConditionParameters(std::string formID) {
 }
 
 void HasPerkCondition::EnableListener(void) {
-	RE::UI::GetSingleton()->AddEventSink(this);
+	
 }
 
 void HasPerkCondition::OnDataLoaded(void) {
@@ -15,6 +16,7 @@ void HasPerkCondition::OnDataLoaded(void) {
 	if (!this->perk) {
 		logger::error("Failed to find perk {}", this->formIDStr);
 	}
+	ConditionManager::GetSingleton()->RegisterMenuListener(this);
 	CheckCondition();
 }
 
@@ -30,19 +32,14 @@ bool HasPerkCondition::CheckCondition() {
 	auto player = RE::PlayerCharacter::GetSingleton();
 	if (player && player->HasPerk(this->perk)) {
 		this->UnlockNotify();
-		RE::UI::GetSingleton()->RemoveEventSink(this);
+		
 		return true;
 	}
 	
 	return false;
 }
 
-RE::BSEventNotifyControl HasPerkCondition::ProcessEvent(const RE::MenuOpenCloseEvent* a_event, RE::BSTEventSource<RE::MenuOpenCloseEvent>*) {
-	if (a_event && !a_event->opening) {
-		CheckCondition();
-	}
-	return RE::BSEventNotifyControl::kContinue;
-}
+
 
 HasPerkConditionFactory::HasPerkConditionFactory() : ConditionFactory() {}
 

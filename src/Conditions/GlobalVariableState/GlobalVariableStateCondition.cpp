@@ -1,16 +1,17 @@
 #include "GlobalVariableStateCondition.h"
 #include "../../CommonFunctions.h"
+#include "../../ConditionManager.h"
 
 extern void RegisterPostLoadFunction(Condition* condition);
 
 GlobalVariableStateCondition::GlobalVariableStateCondition(void) : Condition(ConditionType::GlobalVariableState) {};
 void GlobalVariableStateCondition::OnDataLoaded(void) {
 	this->cachedGlobal = static_cast<RE::TESGlobal*>(GetForm(this->formID, this->plugin));
+	ConditionManager::GetSingleton()->RegisterPositionPlayerListener(this);
 	CheckCondition();
 };
 void GlobalVariableStateCondition::EnableListener(void) {
 	RegisterPostLoadFunction(this);
-	RE::PlayerCharacter::GetSingleton()->AsPositionPlayerEventSource()->AddEventSink<RE::PositionPlayerEvent>(this);
 };
 void GlobalVariableStateCondition::SetConditionParameters(std::string formID_a, float value_a) {
 	this->formID = formID_a;
@@ -22,16 +23,13 @@ bool GlobalVariableStateCondition::CheckCondition() {
 	float globValue = GetGlobalVariableValue(this->cachedGlobal->formID);
 	if(globValue >= this->value) {
 		this->UnlockNotify();
-		RE::PlayerCharacter::GetSingleton()->AsPositionPlayerEventSource()->RemoveEventSink(this);
+		
 		return true;
 	}
 	return false;
 };
 
-RE::BSEventNotifyControl GlobalVariableStateCondition::ProcessEvent(const RE::PositionPlayerEvent*, RE::BSTEventSource<RE::PositionPlayerEvent>*) {
-	if (!this->isMet) CheckCondition();
-	return RE::BSEventNotifyControl::kContinue;
-}
+
 
 // GlobalVariableStateConditionFactory
 GlobalVariableStateConditionFactory::GlobalVariableStateConditionFactory() : ConditionFactory() {};

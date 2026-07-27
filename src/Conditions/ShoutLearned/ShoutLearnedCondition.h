@@ -1,6 +1,6 @@
 #include "../Condition.h"
 
-class ShoutLearnedCondition : public Condition, public RE::BSTEventSink<RE::TESTrackedStatsEvent>
+class ShoutLearnedCondition : public Condition
 {
 public:
 	ShoutLearnedCondition();
@@ -13,7 +13,7 @@ public:
 	int wordNumber = 1;
 	RE::TESShout* cachedShout = nullptr;
 private:
-	RE::BSEventNotifyControl ProcessEvent(const RE::TESTrackedStatsEvent* a_event, RE::BSTEventSource<RE::TESTrackedStatsEvent>*) override;
+	
 };
 
 class ShoutLearnedConditionFactory : public ConditionFactory

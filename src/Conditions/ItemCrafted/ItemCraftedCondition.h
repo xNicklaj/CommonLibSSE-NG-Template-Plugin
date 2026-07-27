@@ -1,17 +1,17 @@
 #include "../Condition.h"
 
-class ItemCraftedCondition : public Condition, public RE::BSTEventSink<RE::ItemCrafted::Event> {
+class ItemCraftedCondition : public Condition {
 public:
 	ItemCraftedCondition();
 	void OnDataLoaded(void) override;
 	void EnableListener(void) override;
 	void SetConditionParameters(std::string itemID) override;
-	bool CheckCondition(RE::FormID itemID);
+	bool CheckCondition() override;
 	
 	std::string itemID;
 	RE::TESForm* cachedForm = nullptr;
 private:
-	RE::BSEventNotifyControl ProcessEvent(const RE::ItemCrafted::Event* a_event, RE::BSTEventSource<RE::ItemCrafted::Event>*) override;
+	
 };
 
 class ItemCraftedConditionFactory : public ConditionFactory {

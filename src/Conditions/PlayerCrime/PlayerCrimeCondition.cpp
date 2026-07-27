@@ -1,4 +1,5 @@
 #include "PlayerCrimeCondition.h"
+#include "../../ConditionManager.h"
 
 extern void RegisterPostLoadFunction(Condition* condition);
 
@@ -9,12 +10,13 @@ void PlayerCrimeCondition::OnDataLoaded(void) {
 		auto faction = static_cast<RE::TESFaction*>(GetForm(id, this->plugin));
 		if(faction) this->cachedFactions.push_back(faction);
 	}
+	ConditionManager::GetSingleton()->RegisterTrackedStatListener("Bounty", this); ConditionManager::GetSingleton()->RegisterTrackedStatListener("Total Fines", this);
 	CheckCondition();
 }
 
 void PlayerCrimeCondition::EnableListener() {
 	RegisterPostLoadFunction(this);
-	RE::ScriptEventSourceHolder::GetSingleton()->AddEventSink(this);
+	
 }
 
 void PlayerCrimeCondition::SetConditionParameters(std::vector<std::string> factionIDs_a, int bountyThreshold_a) {
@@ -39,21 +41,14 @@ bool PlayerCrimeCondition::CheckCondition() {
 	if (allMet && this->cachedFactions.size() > 0) {
 		logger::info("Player met condition: Faction bounties reached threshold.");
 		this->UnlockNotify();
-		RE::ScriptEventSourceHolder::GetSingleton()->RemoveEventSink(this);
+		
 		return true;
 	}
 
 	return false;
 }
 
-RE::BSEventNotifyControl PlayerCrimeCondition::ProcessEvent(const RE::TESTrackedStatsEvent* a_event, RE::BSTEventSource<RE::TESTrackedStatsEvent>*) {
-	std::string statName = a_event->stat.c_str();
-	logger::debug("Tracked stat event: {}", statName);
-	if (statName.find("Bounty") != std::string::npos) {
-		CheckCondition();
-	}
-	return RE::BSEventNotifyControl::kContinue;
-}
+
 
 PlayerCrimeConditionFactory::PlayerCrimeConditionFactory() : ConditionFactory() {}
 

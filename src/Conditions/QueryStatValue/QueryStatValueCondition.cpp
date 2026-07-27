@@ -1,15 +1,17 @@
 #include "QueryStatValueCondition.h"
+#include "../../ConditionManager.h"
 #include "../../CustomRE.h"
 
 extern void RegisterPostLoadFunction(Condition* condition);
 
 QueryStatValueCondition::QueryStatValueCondition(void) : Condition(ConditionType::QueryStatValue) {};
 void QueryStatValueCondition::OnDataLoaded(void) {
+	ConditionManager::GetSingleton()->RegisterTrackedStatListener(this->stat, this);
 	CheckCondition();
 };
 void QueryStatValueCondition::EnableListener(void) {
 	RegisterPostLoadFunction(this);
-	RE::ScriptEventSourceHolder::GetSingleton()->AddEventSink(this);
+	
 };
 void QueryStatValueCondition::SetConditionParameters(std::string stat_a, float value_a) {
 	this->stat = stat_a;
@@ -23,12 +25,7 @@ bool QueryStatValueCondition::CheckCondition() {
 	}
 	return false;
 };
-RE::BSEventNotifyControl QueryStatValueCondition::ProcessEvent(const RE::TESTrackedStatsEvent* a_event, RE::BSTEventSource<RE::TESTrackedStatsEvent>*) {
-	if(strcmp(a_event->stat.c_str(), this->stat.c_str()) == 0) {
-		CheckCondition();
-	}
-	return RE::BSEventNotifyControl::kContinue;
-};
+;
 
 // GlobalVariableStateConditionFactory
 QueryStatValueConditionFactory::QueryStatValueConditionFactory() : ConditionFactory() {};

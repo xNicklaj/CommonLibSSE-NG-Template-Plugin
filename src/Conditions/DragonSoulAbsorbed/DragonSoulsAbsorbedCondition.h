@@ -1,6 +1,6 @@
 #include "../Condition.h"
 
-class DragonSoulAbsorbedCondition : public Condition, public RE::BSTEventSink<RE::DragonSoulsGained::Event> {
+class DragonSoulAbsorbedCondition : public Condition {
 public:
 	DragonSoulAbsorbedCondition();
 	void OnDataLoaded(void) override;
@@ -10,7 +10,7 @@ public:
 
 	int quantity = 0;
 private:
-	RE::BSEventNotifyControl ProcessEvent(const RE::DragonSoulsGained::Event* a_event, RE::BSTEventSource<RE::DragonSoulsGained::Event>*) override;
+	
 };
 
 class DragonSoulAbsorbedConditionFactory : public ConditionFactory {

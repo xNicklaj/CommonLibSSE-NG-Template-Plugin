@@ -66,6 +66,10 @@ public:
 	virtual int Serialize(void);
 	virtual bool Deserialize(int); // Returns true if condition is met
 	
+	virtual void OnDeathEvent(const RE::TESDeathEvent*) {}
+	virtual void OnBookReadEvent(const RE::BooksRead::Event*) {}
+	virtual void OnLocationDiscoveryEvent(const RE::LocationDiscovery::Event*) {}
+	
 	void SetEventManager(eventpp::EventDispatcher<std::string, void()>* eventManager);
 	void SetPlugin(std::string plugin);
 	void UnlockNotify();

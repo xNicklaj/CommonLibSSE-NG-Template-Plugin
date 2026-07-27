@@ -1,4 +1,5 @@
 #include "ActorDeathCondition.h"
+#include "../../ConditionManager.h"
 
 
 extern void RegisterPostLoadFunction(Condition* condition);
@@ -12,35 +13,23 @@ void ActorDeathCondition::OnDataLoaded(void) {
 	RE::TESObjectREFR* targetREFR = RE::TESObjectREFR::LookupByID<RE::TESObjectREFR>(target->formID);
 	if(targetREFR && targetREFR->IsDead()) {
 		this->UnlockNotify();
-		RE::ScriptEventSourceHolder::GetSingleton()->RemoveEventSink(this);
+		
 	}
+	ConditionManager::GetSingleton()->RegisterDeathListener(this->cachedForm->formID, this);
 }
 void ActorDeathCondition::EnableListener(void) {
 	RegisterPostLoadFunction(this);
-	RE::ScriptEventSourceHolder::GetSingleton()->AddEventSink(this);
+	
 };
 void ActorDeathCondition::SetConditionParameters(std::string formID_a) {
 	this->formID = formID_a;
 };
-bool ActorDeathCondition::CheckCondition(RE::FormID) {
-	return false;
+bool ActorDeathCondition::CheckCondition() {
+	logger::info("Player met condition dead form {}", this->formID);
+	this->UnlockNotify();
+	return true;
 };
-RE::BSEventNotifyControl ActorDeathCondition::ProcessEvent(const RE::TESDeathEvent* a_event, RE::BSTEventSource<RE::TESDeathEvent>*) {
-	// 013BB9
-	if (!a_event->actorDying->IsDead()) return RE::BSEventNotifyControl::kContinue;
-	auto* target = this->cachedForm;
-
-	if (target == NULL) {
-		logger::error("Form {} not found.", this->formID);
-		return RE::BSEventNotifyControl::kContinue;
-	}
-	if (a_event->actorDying->formID == target->formID) {
-		logger::info("Player met condition actor {} dead.", this->formID);
-		this->UnlockNotify();
-		RE::ScriptEventSourceHolder::GetSingleton()->RemoveEventSink(this);
-	}
-	return RE::BSEventNotifyControl::kContinue;
-};
+;
 
 ActorDeathConditionFactory::ActorDeathConditionFactory() : ConditionFactory() {};
 Condition* ActorDeathConditionFactory::createCondition() {

@@ -3,7 +3,7 @@
 #ifndef OBJECT_ENABLED_CONDITION_H
 #define OBJECT_ENABLED_CONDITION_H
 
-class ObjectStateCondition : public Condition, public RE::BSTEventSink<RE::PositionPlayerEvent> {
+class ObjectStateCondition : public Condition {
 public:
     ObjectStateCondition();
     void OnDataLoaded() override;
@@ -15,7 +15,7 @@ public:
 private:
     std::string formID = "";
     bool state = false;
-    RE::BSEventNotifyControl ProcessEvent(const RE::PositionPlayerEvent* a_event, RE::BSTEventSource<RE::PositionPlayerEvent>*) override;
+    
 };
 
 class ObjectStateConditionFactory : public ConditionFactory {

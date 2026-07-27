@@ -9,6 +9,7 @@ using namespace SKSE::stl;
 #include "AchievementWidget.h"
 #include "Conditions/Condition.h"
 #include "EventProcessor.h"
+#include "ConditionManager.h"
 #include "Papyrus.h"
 #include "ConsoleUtilSSE.h"
 #include "Sync.h"
@@ -47,6 +48,7 @@ void InitializePostLoad() {
         for (auto& condition: postLoadConditionRegistry) {
             condition->OnDataLoaded();
         }
+        ConditionManager::GetSingleton()->EnableListeners();
     }
 
     Scaleform::AchievementWidget::Show();

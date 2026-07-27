@@ -1,4 +1,5 @@
 #include "LocationDiscoveryCondition.h"
+#include "../../ConditionManager.h"
 
 extern void RegisterPostLoadFunction(Condition* condition);
 
@@ -65,12 +66,13 @@ void LocationDiscoveryCondition::OnDataLoaded(void) {
         if (CheckKnownLocation(this->locationName, this->formID, this->plugin)) {
             logger::info("Player met condition found {} in {}.", this->formID != "" ? this->formID : this->locationName, this->worldspaceID);
             this->UnlockNotify();
-            RE::LocationDiscovery::GetEventSource()->RemoveEventSink(this);
+            
         };
     } catch (const std::exception&) {
         logger::error("An error occurred in OnDataLoaded of LocationDiscoveryCondition, with parameters ({}, {})", this->locationName, this->worldspaceID);
     }
     
+	ConditionManager::GetSingleton()->RegisterLocationDiscoveryListener(this);
 }
 void LocationDiscoveryCondition::Localize(std::string path) {
     if(this->locationName != "" && this->locationName[0] == '$')
@@ -78,39 +80,39 @@ void LocationDiscoveryCondition::Localize(std::string path) {
 }
 void LocationDiscoveryCondition::EnableListener() {
     RegisterPostLoadFunction(this);
-    RE::LocationDiscovery::GetEventSource()->AddEventSink(this);
+    
 }
 void LocationDiscoveryCondition::SetConditionParameters(std::string locationName_a, std::string worldspaceID_a, std::string formID_a) {
     this->locationName = locationName_a;
     this->worldspaceID = worldspaceID_a;
     this->formID = formID_a;
 }
-bool LocationDiscoveryCondition::CheckCondition(std::string locationName_l, std::string worldspaceID_l) {
-    if (locationName_l == this->locationName && worldspaceID_l == this->worldspaceID) {
-        logger::info("Player met condition found {} in {}.", this->locationName, this->worldspaceID);
-        this->UnlockNotify();
-        RE::LocationDiscovery::GetEventSource()->RemoveEventSink(this);
-        return true;
-    }
-    return false;
+bool LocationDiscoveryCondition::CheckCondition() {
+	return false;
 }
-RE::BSEventNotifyControl LocationDiscoveryCondition::ProcessEvent(const RE::LocationDiscovery::Event* a_event, RE::BSTEventSource<RE::LocationDiscovery::Event>*) {
-    if (this->formID != "") {
-        RE::TESObjectREFR* refr = FindMapMarkerByData(a_event->mapMarkerData);
-        if (refr) {
-            RE::TESObjectREFR* targetRefr = this->cachedRef;
-            if (targetRefr && targetRefr->formID == refr->formID) {
-                logger::info("Player met condition found {} in {}.", this->formID, this->worldspaceID);
-                this->UnlockNotify();
-                RE::LocationDiscovery::GetEventSource()->RemoveEventSink(this);
-                return RE::BSEventNotifyControl::kContinue;
-            }
-        }
-    } else {
-        CheckCondition(a_event->mapMarkerData->locationName.GetFullName(), a_event->worldspaceID);
-    }
-    return RE::BSEventNotifyControl::kContinue;
+
+void LocationDiscoveryCondition::OnLocationDiscoveryEvent(const RE::LocationDiscovery::Event* event) {
+	if (!event || !event->mapMarkerData) return;
+	
+	bool matched = false;
+	if (this->formID != "") {
+		RE::TESObjectREFR* refr = FindMapMarkerByData(event->mapMarkerData);
+		if (this->cachedRef && refr && refr->GetFormID() == this->cachedRef->GetFormID()) {
+			matched = true;
+		}
+	} else {
+		std::string name = event->mapMarkerData->locationName.GetFullName();
+		if (name == this->locationName) {
+			matched = true;
+		}
+	}
+	
+	if (matched) {
+		logger::info("Player met condition found {} in {}.", this->formID != "" ? this->formID : this->locationName, this->worldspaceID);
+		this->UnlockNotify();
+	}
 }
+
 
 LocationDiscoveryConditionFactory::LocationDiscoveryConditionFactory() : ConditionFactory() {};
 Condition* LocationDiscoveryConditionFactory::createCondition() {

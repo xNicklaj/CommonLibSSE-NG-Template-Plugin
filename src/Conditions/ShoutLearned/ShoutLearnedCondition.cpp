@@ -1,30 +1,24 @@
 #include "ShoutLearnedCondition.h"
+#include "../../ConditionManager.h"
 
 extern void RegisterPostLoadFunction(Condition* condition);
 
 ShoutLearnedCondition::ShoutLearnedCondition() : Condition(ConditionType::SpellLearned) {}
 void ShoutLearnedCondition::OnDataLoaded(void) {
 	this->cachedShout = static_cast<RE::TESShout*>(GetForm(this->FormID, this->plugin));
+	ConditionManager::GetSingleton()->RegisterTrackedStatListener("Words Of Power Learned", this);
     CheckCondition();
 }
 void ShoutLearnedCondition::EnableListener(void)
 {
     RegisterPostLoadFunction(this);
-    RE::ScriptEventSourceHolder::GetSingleton()->AddEventSink(this);
+    
 }
 void ShoutLearnedCondition::SetConditionParameters(std::string formID_a, int wordNumber_a) {
     this->FormID = formID_a;
     this->wordNumber = wordNumber_a;
 }
-RE::BSEventNotifyControl ShoutLearnedCondition::ProcessEvent(const RE::TESTrackedStatsEvent* a_event, RE::BSTEventSource<RE::TESTrackedStatsEvent>*) {
-    if (a_event->stat == "Words Of Power Learned") {
-        CheckCondition();
-    }
-    
-    CheckCondition();
-    
-    return RE::BSEventNotifyControl::kContinue;
-}
+
 
 bool ShoutLearnedCondition::CheckCondition() {
     bool found = false;
@@ -51,7 +45,7 @@ bool ShoutLearnedCondition::CheckCondition() {
     if (found && wordCount >= this->wordNumber) {
         logger::info("Player met condition learned shout {}:{}", target->fullName.c_str(), FormIDToString(target->formID));
         this->UnlockNotify();
-        RE::ScriptEventSourceHolder::GetSingleton()->RemoveEventSink(this);
+        
     }
     return false;
 }

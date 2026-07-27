@@ -1,6 +1,6 @@
 #include "../Condition.h"
 
-class QuestObjectiveDoneCondition : public Condition, public RE::BSTEventSink<RE::TESQuestStageEvent>, public RE::BSTEventSink<RE::PositionPlayerEvent> {
+class QuestObjectiveDoneCondition : public Condition {
 public:
 	QuestObjectiveDoneCondition();
 
@@ -12,8 +12,8 @@ public:
 	std::string formID;
 	int objective = 200;
 private:
-	RE::BSEventNotifyControl ProcessEvent(const RE::TESQuestStageEvent* a_event, RE::BSTEventSource<RE::TESQuestStageEvent>*) override;
-	RE::BSEventNotifyControl ProcessEvent(const RE::PositionPlayerEvent* a_event, RE::BSTEventSource<RE::PositionPlayerEvent>*) override;
+	
+	
 	RE::TESQuest* quest = nullptr;
 };
 

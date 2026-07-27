@@ -1,13 +1,14 @@
 #include "../Condition.h"
 
-class BaseActorDeathCondition : public Condition, public RE::BSTEventSink<RE::TESDeathEvent> {
+class BaseActorDeathCondition : public Condition {
 public:
 	BaseActorDeathCondition();
 	void OnDataLoaded(void) override;
 	void EnableListener(void) override;
 	void SetConditionParameters(std::string, int) override;
     void SetEditorID(bool);
-	bool CheckCondition();
+	bool CheckCondition() override;
+	void OnDeathEvent(const RE::TESDeathEvent* event) override;
 
 	int Serialize() override;
 	bool Deserialize(int value) override;
@@ -19,7 +20,7 @@ public:
 	int quantity = 0;
 	RE::TESNPC* cachedNPC = nullptr;
 private:
-	RE::BSEventNotifyControl ProcessEvent(const RE::TESDeathEvent * a_event, RE::BSTEventSource<RE::TESDeathEvent>*) override;
+	
 	int currQuantity = 0;
 	bool isFormID = false;
     bool isEditorID = false;

@@ -1,6 +1,6 @@
 #include "../Condition.h"
 
-class QuestStageDoneCondition : public Condition, public RE::BSTEventSink<RE::TESQuestStageEvent> {
+class QuestStageDoneCondition : public Condition {
 public:
 	QuestStageDoneCondition();
 
@@ -14,7 +14,7 @@ public:
 	std::string OP;
 	RE::TESQuest* cachedQuest = nullptr;
 private:
-	RE::BSEventNotifyControl ProcessEvent(const RE::TESQuestStageEvent* a_event, RE::BSTEventSource<RE::TESQuestStageEvent>*) override;
+	
 };
 
 class QuestStageDoneConditionFactory : public ConditionFactory {

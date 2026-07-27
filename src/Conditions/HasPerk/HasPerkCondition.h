@@ -4,7 +4,7 @@
 #include "../Condition.h"
 #include "../../CommonFunctions.h"
 
-class HasPerkCondition : public Condition, public RE::BSTEventSink<RE::MenuOpenCloseEvent> {
+class HasPerkCondition : public Condition {
 public:
 	HasPerkCondition();
 
@@ -16,7 +16,7 @@ public:
 	std::string formIDStr;
 	RE::BGSPerk* perk = nullptr;
 private:
-	RE::BSEventNotifyControl ProcessEvent(const RE::MenuOpenCloseEvent* a_event, RE::BSTEventSource<RE::MenuOpenCloseEvent>*) override;
+	
 };
 
 class HasPerkConditionFactory : public ConditionFactory {
