@@ -98,7 +98,34 @@
             "achievementName": "$NAME_Hidden Knowledge",
             "description": "$DESC_Hidden Knowledge",
             "icon": "ACH_HiddenKnowledge.dds",
-            "conditions": []
+            "joinType": "AND",
+            "conditions": [
+                {
+                    "type": "QuestStageDone",
+                    "formID": "03216C",
+                    "stage": 20
+                },
+                {
+                    "type": "QuestStageDone",
+                    "formID": "03216E",
+                    "stage": 20
+                },
+                {
+                    "type": "QuestStageDone",
+                    "formID": "03216D",
+                    "stage": 20
+                },
+                {
+                    "type": "QuestStageDone",
+                    "formID": "03216F",
+                    "stage": 20
+                },
+                {
+                    "type": "QuestStageDone",
+                    "formID": "032170",
+                    "stage": 20
+                }
+            ]
         },
         {
             "achievementName": "$NAME_Stalhrim Crafter",

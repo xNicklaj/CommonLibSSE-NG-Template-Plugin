@@ -23,6 +23,8 @@
 #include "Conditions/PlayerFirstEnterCell/PlayerFirstEnterCellCondition.h"
 #include "Conditions/ItemCrafted/ItemCraftedCondition.h"
 #include "Conditions/BookRead/BookReadCondition.h"
+#include "Conditions/HasPerk/HasPerkCondition.h"
+#include "Conditions/HasPerks/HasPerksCondition.h"
 #include "Conditions/QueryStatValue/QueryStatValueCondition.h"
 #include "Conditions/ActorDeath/ActorDeathCondition.h"
 #include "Conditions/GlobalVariableState/GlobalVariableStateCondition.h"
@@ -204,6 +206,18 @@ Achievement::Achievement(json& jsonData, std::string plugin, std::string groupNa
                 WorldspaceDiscoveryConditionFactory* worldspaceDiscoveryConditionFactory = new WorldspaceDiscoveryConditionFactory();
                 a_condition = worldspaceDiscoveryConditionFactory->createCondition();
                 a_condition->SetConditionParameters(condition["worldspaceID"].get<std::string>(), condition["requiredCount"].get<int>());
+            } else if (type == "HasPerk") {
+                HasPerkConditionFactory* hasPerkConditionFactory = new HasPerkConditionFactory();
+                a_condition = hasPerkConditionFactory->createCondition();
+                a_condition->SetConditionParameters(condition["formID"].get<std::string>());
+            } else if (type == "HasPerks") {
+                HasPerksConditionFactory* hasPerksConditionFactory = new HasPerksConditionFactory();
+                a_condition = hasPerksConditionFactory->createCondition();
+                std::vector<std::string> perks;
+                for (auto& perkID : condition["perks"]) {
+                    perks.push_back(perkID.get<std::string>());
+                }
+                a_condition->SetConditionParameters(perks, condition["threshold"].get<int>());
             }
             else {
                 logger::warn("Unknown condition type {} in {}.", type, this->achievementName);

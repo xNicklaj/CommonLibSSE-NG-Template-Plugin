@@ -72,24 +72,35 @@
             "achievementName": "$NAME_Werewolf Mastered",
             "description": "$DESC_Werewolf Mastered",
             "icon": "ACH_WerewolfMastered.dds",
+            "joinType": "AND",
             "conditions": [
-                {
-                    "type": "InvestedPerkPoints",
-                    "skill": "TODO: BOH Werewolf",
-                    "quantity": 11
-                }
+                { "type": "HasPerk", "formID": "011CFB" },
+                { "type": "HasPerk", "formID": "0059A8" },
+                { "type": "HasPerk", "formID": "0059A9" },
+                { "type": "HasPerk", "formID": "0059AA" },
+                { "type": "HasPerk", "formID": "0059AB" },
+                { "type": "HasPerk", "formID": "0059A5" },
+                { "type": "HasPerk", "formID": "0059A6" },
+                { "type": "HasPerk", "formID": "0059A7" }
             ]
         },
         {
             "achievementName": "$NAME_Vampire Mastered",
             "description": "$DESC_Vampire Mastered",
             "icon": "ACH_VampireMastered.dds",
+            "joinType": "AND",
             "conditions": [
-                {
-                    "type": "InvestedPerkPoints",
-                    "skill": "TODO: BOH Vampire",
-                    "quantity": 11
-                }
+                { "type": "HasPerk", "formID": "005995" },
+                { "type": "HasPerk", "formID": "005996" },
+                { "type": "HasPerk", "formID": "005997" },
+                { "type": "HasPerk", "formID": "005998" },
+                { "type": "HasPerk", "formID": "00599A" },
+                { "type": "HasPerk", "formID": "00599B" },
+                { "type": "HasPerk", "formID": "00599C" },
+                { "type": "HasPerk", "formID": "00599E" },
+                { "type": "HasPerk", "formID": "080A70" },
+                { "type": "HasPerk", "formID": "005994" },
+                { "type": "HasPerk", "formID": "169008" }
             ]
         },
         {

@@ -40,6 +40,8 @@ enum ConditionType {
 	SpellLearned, // Done
 	PapyrusBinding,
 	ObjectState,
+	HasPerk,
+	HasPerks,
 	NotSet // Done
 };
 
